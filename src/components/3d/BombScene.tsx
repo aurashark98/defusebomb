@@ -327,7 +327,7 @@ export const BombScene: React.FC<BombSceneProps> = ({
   const keyCoords = new THREE.Vector2(7.5, 1.5);        // on tool rack
   const chestCoords = new THREE.Vector2(-7.5, -4.2);     // back-left locker
   const doorCoords = new THREE.Vector2(-1.8, -5.8);      // heavy exit blast door
-  const flashlightCoords = new THREE.Vector2(3.2, 0.4);  // on desk beside bomb
+  const flashlightCoords = new THREE.Vector2(4.6, 0.5);  // on desk right beside bomb
 
   const getDistToKey = () =>
     Math.hypot(playerPos.current.x - keyCoords.x, playerPos.current.z - keyCoords.y);

@@ -528,7 +528,7 @@ export const HostageRoom: React.FC<HostageRoomProps> = ({
 
       {/* ================= TACTICAL FLASHLIGHT BESIDE BOMB ON DESK ================= */}
       {!hasFlashlight && (
-        <group position={[3.2, -2.15, 0.4]} rotation={[0, 0.35, 0]} onClick={onPickUpFlashlight}>
+        <group position={[4.6, -2.15, 0.5]} rotation={[0, 0.35, 0]} onClick={onPickUpFlashlight}>
           {/* Tactical Flashlight Body */}
           <mesh rotation={[0, 0, Math.PI / 2]} castShadow>
             <cylinderGeometry args={[0.08, 0.08, 0.75, 16]} />
@@ -547,7 +547,7 @@ export const HostageRoom: React.FC<HostageRoomProps> = ({
           {/* Front Glass Lens */}
           <mesh position={[-0.55, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
             <circleGeometry args={[0.14, 16]} />
-            <meshStandardMaterial color="#e0f2fe" emissive="#38bdf8" emissiveIntensity={0.6} />
+            <meshStandardMaterial color="#38bdf8" emissive="#38bdf8" emissiveIntensity={2.0} />
           </mesh>
           {/* Tactical Grip Knurling Bands */}
           {[-0.05, 0.08, 0.2].map((gx, gi) => (
@@ -561,9 +561,11 @@ export const HostageRoom: React.FC<HostageRoomProps> = ({
             <cylinderGeometry args={[0.075, 0.075, 0.05, 16]} />
             <meshStandardMaterial color="#059669" emissive="#10b981" emissiveIntensity={1.5} />
           </mesh>
+          {/* Glowing Beacon in dark room */}
+          <pointLight position={[0, 0.35, 0]} distance={4.5} intensity={2.5} color="#38bdf8" />
           {/* Floating Label */}
-          <Text position={[0, 0.32, 0]} fontSize={0.11} color="#38bdf8" fontWeight="bold">
-            [KLIK / TEKAN X] AMBIL SENTER
+          <Text position={[0, 0.38, 0]} fontSize={0.15} color="#38bdf8" fontWeight="bold">
+            🔦 [SENTER TAKTIS] KLIK / TEKAN X
           </Text>
         </group>
       )}
