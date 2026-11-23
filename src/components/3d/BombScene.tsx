@@ -27,7 +27,6 @@ interface BombSceneProps {
   onRestart: () => void;
   onSolveModule: (index: number) => void;
   onStrike: (explanation: string) => void;
-  onSwitchTo2D: () => void;
   onOpenSettings: () => void;
   onOpenHowToPlay: () => void;
   onGoToMenu: () => void;
@@ -118,7 +117,6 @@ export const BombScene: React.FC<BombSceneProps> = ({
   onRestart,
   onSolveModule,
   onStrike,
-  onSwitchTo2D,
   onOpenSettings,
   onOpenHowToPlay,
   onGoToMenu,
@@ -650,14 +648,6 @@ export const BombScene: React.FC<BombSceneProps> = ({
               <div className="h-4 w-px bg-zinc-700" />
             </>
           )}
-
-          <button onClick={onSwitchTo2D}
-            className="px-2.5 py-1 text-xs font-mono font-bold rounded bg-zinc-800 hover:bg-zinc-700 text-cyan-400 border border-cyan-500/40 flex items-center gap-1 transition"
-            title="Beralih ke mode 2D Tactical Panel"
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">2D</span>
-          </button>
 
           <button onClick={onOpenHowToPlay}
             className="p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition"
