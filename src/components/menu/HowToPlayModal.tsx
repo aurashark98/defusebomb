@@ -88,12 +88,18 @@ export const HowToPlayModal: React.FC<HowToPlayModalProps> = ({ onClose }) => {
                 <ul className="space-y-1.5 text-zinc-300 font-mono text-[11px]">
                   <li>🏃 <strong>[W, A, S, D]:</strong> Berjalan maju, mundur, kiri, kanan menjelajahi ruangan interogasi.</li>
                   <li>👀 <strong>Geser Mouse / Touchpad:</strong> Melihat ke sekeliling (kiri, kanan, atas, bawah). Klik layar saat berdiri untuk mengaktifkan Mouse Look, tekan [ESC] untuk melepas kursor.</li>
-                  <li>🔦 <strong>[F]:</strong> Nyalakan / Matikan Senter Sorot Fokus. Senter tersedia di sebelah koper bom dan bisa digunakan saat menjelajah maupun saat defuse bom!</li>
-                  <li>📄 <strong>[H]:</strong> Buka & baca Kertas Hint (setelah diambil dari peti rahasia).</li>
+                  <li>📦 <strong>[1, 2]:</strong> Hotbar Kotak Item di bawah tengah:
+                    <ul className="pl-4 list-disc text-zinc-400 mt-1 space-y-0.5">
+                      <li><strong>[1]:</strong> Pegang / simpan Senter Taktis di tangan.</li>
+                      <li><strong>[2]:</strong> Pegang / buka Kertas Hint Intelijen.</li>
+                    </ul>
+                  </li>
+                  <li>🔦 <strong>Klik Kiri Mouse / [F]:</strong> Saat sedang memegang senter (Slot 1), klik kiri mouse untuk menyalakan/mematikan senter sorot fokus!</li>
                   <li>🪑 <strong>[Q]:</strong> Duduk kembali di kursi meja bom. (Harus duduk dulu sebelum bisa defuse koper!).</li>
                   <li>🧍 <strong>[E]:</strong> Berdiri dari kursi untuk mulai menjelajah ruangan.</li>
                   <li>🔑 <strong>[X]:</strong> Tombol Interaksi:
                     <ul className="pl-4 list-disc text-zinc-400 mt-1 space-y-0.5">
+                      <li>Di dekat meja bom: Mengambil Senter Taktis.</li>
                       <li>Di dekat rak perkakas: Menjawab teka-teki daya server untuk mengambil Kunci Emas.</li>
                       <li>Di dekat lemari sudut belakang: Membuka Peti Rahasia & mengambil Kertas Hint.</li>
                       <li>Saat duduk di kursi meja: Mulai interaksi defuse bom koper 3D!</li>

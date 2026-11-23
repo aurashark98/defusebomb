@@ -527,44 +527,46 @@ export const HostageRoom: React.FC<HostageRoomProps> = ({
       </group>
 
       {/* ================= TACTICAL FLASHLIGHT BESIDE BOMB ON DESK ================= */}
-      <group position={[3.2, -2.15, 0.4]} rotation={[0, 0.35, 0]} onClick={onPickUpFlashlight}>
-        {/* Tactical Flashlight Body */}
-        <mesh rotation={[0, 0, Math.PI / 2]} castShadow>
-          <cylinderGeometry args={[0.08, 0.08, 0.75, 16]} />
-          <meshStandardMaterial color="#18181b" metalness={0.9} roughness={0.25} />
-        </mesh>
-        {/* Bezel Ring */}
-        <mesh position={[-0.2, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.085, 0.085, 0.05, 16]} />
-          <meshStandardMaterial color="#eab308" metalness={0.8} roughness={0.3} />
-        </mesh>
-        {/* Flashlight Head */}
-        <mesh position={[-0.42, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
-          <cylinderGeometry args={[0.15, 0.09, 0.25, 16]} />
-          <meshStandardMaterial color="#27272a" metalness={0.95} roughness={0.15} />
-        </mesh>
-        {/* Front Glass Lens */}
-        <mesh position={[-0.55, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <circleGeometry args={[0.14, 16]} />
-          <meshStandardMaterial color="#e0f2fe" emissive="#38bdf8" emissiveIntensity={0.6} />
-        </mesh>
-        {/* Tactical Grip Knurling Bands */}
-        {[-0.05, 0.08, 0.2].map((gx, gi) => (
-          <mesh key={gi} position={[gx, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.083, 0.083, 0.06, 16]} />
-            <meshStandardMaterial color="#3f3f46" metalness={0.8} roughness={0.5} />
+      {!hasFlashlight && (
+        <group position={[3.2, -2.15, 0.4]} rotation={[0, 0.35, 0]} onClick={onPickUpFlashlight}>
+          {/* Tactical Flashlight Body */}
+          <mesh rotation={[0, 0, Math.PI / 2]} castShadow>
+            <cylinderGeometry args={[0.08, 0.08, 0.75, 16]} />
+            <meshStandardMaterial color="#18181b" metalness={0.9} roughness={0.25} />
           </mesh>
-        ))}
-        {/* Tailcap Switch */}
-        <mesh position={[0.39, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.075, 0.075, 0.05, 16]} />
-          <meshStandardMaterial color="#059669" emissive="#10b981" emissiveIntensity={1.5} />
-        </mesh>
-        {/* Floating Label */}
-        <Text position={[0, 0.32, 0]} fontSize={0.11} color="#38bdf8" fontWeight="bold">
-          {hasFlashlight ? "[SENTER AKTIF - TEKAN F]" : "[KLIK / F] AMBIL SENTER"}
-        </Text>
-      </group>
+          {/* Bezel Ring */}
+          <mesh position={[-0.2, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.085, 0.085, 0.05, 16]} />
+            <meshStandardMaterial color="#eab308" metalness={0.8} roughness={0.3} />
+          </mesh>
+          {/* Flashlight Head */}
+          <mesh position={[-0.42, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
+            <cylinderGeometry args={[0.15, 0.09, 0.25, 16]} />
+            <meshStandardMaterial color="#27272a" metalness={0.95} roughness={0.15} />
+          </mesh>
+          {/* Front Glass Lens */}
+          <mesh position={[-0.55, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <circleGeometry args={[0.14, 16]} />
+            <meshStandardMaterial color="#e0f2fe" emissive="#38bdf8" emissiveIntensity={0.6} />
+          </mesh>
+          {/* Tactical Grip Knurling Bands */}
+          {[-0.05, 0.08, 0.2].map((gx, gi) => (
+            <mesh key={gi} position={[gx, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+              <cylinderGeometry args={[0.083, 0.083, 0.06, 16]} />
+              <meshStandardMaterial color="#3f3f46" metalness={0.8} roughness={0.5} />
+            </mesh>
+          ))}
+          {/* Tailcap Switch */}
+          <mesh position={[0.39, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.075, 0.075, 0.05, 16]} />
+            <meshStandardMaterial color="#059669" emissive="#10b981" emissiveIntensity={1.5} />
+          </mesh>
+          {/* Floating Label */}
+          <Text position={[0, 0.32, 0]} fontSize={0.11} color="#38bdf8" fontWeight="bold">
+            [KLIK / TEKAN X] AMBIL SENTER
+          </Text>
+        </group>
+      )}
 
       {/* ================= ROOM WALLS, CEILING & GRID FLOOR (GTA BUNKER STYLE) ================= */}
       {/* Floor with Concrete Tile Grid */}

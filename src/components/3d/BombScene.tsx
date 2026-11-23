@@ -84,6 +84,131 @@ function FlashlightLight({ isOn }: { isOn: boolean }) {
   );
 }
 
+// ─── First-Person Hand Viewmodel (Glove holding item in view) ────────────────
+interface FirstPersonHandProps {
+  activeSlot: 1 | 2 | null;
+  hasFlashlight: boolean;
+  isFlashlightOn: boolean;
+  hasHintPaper: boolean;
+}
+
+function FirstPersonHand({
+  activeSlot,
+  hasFlashlight,
+  isFlashlightOn,
+  hasHintPaper
+}: FirstPersonHandProps) {
+  const handGroupRef = useRef<THREE.Group>(null);
+  const { camera } = useThree();
+
+  useFrame((state) => {
+    if (!handGroupRef.current) return;
+    const t = state.clock.getElapsedTime();
+    // Subtle breathing / walking bob
+    const bobX = Math.sin(t * 2) * 0.003;
+    const bobY = Math.cos(t * 3.5) * 0.003;
+
+    // Position & orient relative to camera
+    handGroupRef.current.position.copy(camera.position);
+    handGroupRef.current.quaternion.copy(camera.quaternion);
+
+    // Offset into lower-right of player view (-Z is camera forward)
+    const offset = new THREE.Vector3(0.24 + bobX, -0.22 + bobY, -0.48);
+    offset.applyQuaternion(camera.quaternion);
+    handGroupRef.current.position.add(offset);
+  });
+
+  const isHoldingFlashlight = activeSlot === 1 && hasFlashlight;
+  const isHoldingPaper = activeSlot === 2 && hasHintPaper;
+
+  if (!isHoldingFlashlight && !isHoldingPaper) return null;
+
+  return (
+    <group ref={handGroupRef}>
+      {isHoldingFlashlight && (
+        <group rotation={[0.2, -0.2, 0.05]}>
+          {/* Forearm Sleeve */}
+          <mesh position={[0.1, -0.25, 0.32]} rotation={[-0.45, 0.1, -0.1]}>
+            <cylinderGeometry args={[0.065, 0.075, 0.5, 16]} />
+            <meshStandardMaterial color="#18181b" roughness={0.9} />
+          </mesh>
+          {/* Wrist Cuff */}
+          <mesh position={[0.06, -0.07, 0.16]} rotation={[-0.45, 0.1, -0.1]}>
+            <cylinderGeometry args={[0.068, 0.068, 0.07, 16]} />
+            <meshStandardMaterial color="#3f3f46" roughness={0.6} />
+          </mesh>
+          {/* Tactical Glove Hand Palm */}
+          <mesh position={[0.02, -0.01, 0.04]} rotation={[0.08, 0.15, -0.1]}>
+            <boxGeometry args={[0.085, 0.08, 0.12]} />
+            <meshStandardMaterial color="#27272a" roughness={0.7} />
+          </mesh>
+          {/* Gripping Fingers around Flashlight */}
+          <mesh position={[-0.035, 0.005, 0.02]} rotation={[0, 0, 0.35]}>
+            <boxGeometry args={[0.038, 0.075, 0.11]} />
+            <meshStandardMaterial color="#1f2937" roughness={0.7} />
+          </mesh>
+          {/* Glove Thumb */}
+          <mesh position={[0.035, 0.045, 0.035]} rotation={[-0.2, 0.1, -0.3]}>
+            <boxGeometry args={[0.035, 0.055, 0.04]} />
+            <meshStandardMaterial color="#1f2937" roughness={0.7} />
+          </mesh>
+
+          {/* Flashlight Held in Hand */}
+          <group position={[0, 0, 0]}>
+            {/* Flashlight Barrel */}
+            <mesh rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.028, 0.028, 0.3, 16]} />
+              <meshStandardMaterial color="#111827" metalness={0.9} roughness={0.2} />
+            </mesh>
+            {/* Gold Accent Ring */}
+            <mesh position={[0, 0, -0.1]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.032, 0.032, 0.02, 16]} />
+              <meshStandardMaterial color="#eab308" metalness={0.8} roughness={0.3} />
+            </mesh>
+            {/* Flashlight Head */}
+            <mesh position={[0, 0, -0.16]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.048, 0.03, 0.1, 16]} />
+              <meshStandardMaterial color="#1f2937" metalness={0.95} roughness={0.15} />
+            </mesh>
+            {/* Front Bulb Lens */}
+            <mesh position={[0, 0, -0.211]} rotation={[0, Math.PI, 0]}>
+              <circleGeometry args={[0.044, 16]} />
+              <meshStandardMaterial
+                color={isFlashlightOn ? "#ffffff" : "#475569"}
+                emissive={isFlashlightOn ? "#ffffff" : "#0f172a"}
+                emissiveIntensity={isFlashlightOn ? 6.0 : 0.2}
+              />
+            </mesh>
+            {/* Lens Flare Light */}
+            {isFlashlightOn && (
+              <pointLight position={[0, 0, -0.24]} distance={0.8} intensity={2.5} color="#ffffff" />
+            )}
+          </group>
+        </group>
+      )}
+
+      {isHoldingPaper && (
+        <group position={[0.08, 0.02, 0]} rotation={[0.25, -0.25, -0.05]}>
+          {/* Hand holding clue paper */}
+          <mesh position={[0.06, -0.14, 0.18]} rotation={[-0.3, 0.1, 0]}>
+            <cylinderGeometry args={[0.055, 0.065, 0.35, 12]} />
+            <meshStandardMaterial color="#18181b" roughness={0.8} />
+          </mesh>
+          <mesh position={[0.02, 0, 0.05]}>
+            <boxGeometry args={[0.08, 0.06, 0.09]} />
+            <meshStandardMaterial color="#27272a" roughness={0.7} />
+          </mesh>
+          {/* Sheet of Intel Paper */}
+          <mesh position={[-0.08, 0.04, -0.04]} rotation={[-0.1, 0.25, 0.05]}>
+            <boxGeometry args={[0.26, 0.004, 0.32]} />
+            <meshStandardMaterial color="#fef9c3" emissive="#fef08a" emissiveIntensity={0.25} roughness={0.6} />
+          </mesh>
+        </group>
+      )}
+    </group>
+  );
+}
+
 // FPS Limiter
 function FpsLimiter({ targetFps }: { targetFps: number }) {
   const lastTime = useRef<number>(0);
@@ -188,6 +313,9 @@ export const BombScene: React.FC<BombSceneProps> = ({
   const [isInteracting, setIsInteracting] = useState(false);
   const [isRiddleOpen, setIsRiddleOpen] = useState(false);
 
+  // ── Active Item held in hand (Slot 1 = Flashlight, Slot 2 = Hint Paper / Key)
+  const [activeSlot, setActiveSlot] = useState<1 | 2 | null>(null);
+
   // ── FPS camera refs
   const playerPos = useRef(new THREE.Vector3(0, 1.65, 5.2));
   const yaw = useRef(Math.PI); // Facing -Z
@@ -196,9 +324,10 @@ export const BombScene: React.FC<BombSceneProps> = ({
   const [isPointerLocked, setIsPointerLocked] = useState(false);
 
   // ── Proximity helpers
-  const keyCoords = new THREE.Vector2(7.5, 1.5);     // on tool rack
-  const chestCoords = new THREE.Vector2(-7.5, -4.2);  // back-left locker
-  const doorCoords = new THREE.Vector2(-1.8, -5.8);   // heavy exit blast door
+  const keyCoords = new THREE.Vector2(7.5, 1.5);        // on tool rack
+  const chestCoords = new THREE.Vector2(-7.5, -4.2);     // back-left locker
+  const doorCoords = new THREE.Vector2(-1.8, -5.8);      // heavy exit blast door
+  const flashlightCoords = new THREE.Vector2(3.2, 0.4);  // on desk beside bomb
 
   const getDistToKey = () =>
     Math.hypot(playerPos.current.x - keyCoords.x, playerPos.current.z - keyCoords.y);
@@ -206,10 +335,13 @@ export const BombScene: React.FC<BombSceneProps> = ({
     Math.hypot(playerPos.current.x - chestCoords.x, playerPos.current.z - chestCoords.y);
   const getDistToDoor = () =>
     Math.hypot(playerPos.current.x - doorCoords.x, playerPos.current.z - doorCoords.y);
+  const getDistToFlashlight = () =>
+    Math.hypot(playerPos.current.x - flashlightCoords.x, playerPos.current.z - flashlightCoords.y);
 
   const [nearKey, setNearKey] = useState(false);
   const [nearChest, setNearChest] = useState(false);
   const [nearDoor, setNearDoor] = useState(false);
+  const [nearFlashlight, setNearFlashlight] = useState(false);
 
   // ── Toggle interaction with mechanical latch animation & sound
   const toggleInteract = useCallback(() => {
@@ -308,15 +440,37 @@ export const BombScene: React.FC<BombSceneProps> = ({
       setNearKey(false);
       setNearChest(false);
       setNearDoor(false);
+      setNearFlashlight(false);
       return;
     }
     const id = setInterval(() => {
       setNearKey(getDistToKey() < 2.8);
       setNearChest(getDistToChest() < 2.8);
       setNearDoor(getDistToDoor() < 3.0);
+      setNearFlashlight(getDistToFlashlight() < 2.5);
     }, 150);
     return () => clearInterval(id);
-  }, [stance, hasKey, isChestOpen]);
+  }, [stance, hasKey, isChestOpen, hasFlashlight]);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Mouse Click Handler: Left Click (Button 0) turns Flashlight ON/OFF when held!
+  // ─────────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const handleMouseDown = (e: MouseEvent) => {
+      if (e.button === 0) { // Left click
+        if (activeSlot === 1 && hasFlashlight) {
+          const target = e.target as HTMLElement;
+          // Trigger when clicking 3D world / canvas or when pointer locked
+          if (document.pointerLockElement === canvasRef.current || target.tagName.toLowerCase() === 'canvas') {
+            sound.playKeypadClick();
+            onToggleFlashlight();
+          }
+        }
+      }
+    };
+    window.addEventListener('mousedown', handleMouseDown);
+    return () => window.removeEventListener('mousedown', handleMouseDown);
+  }, [activeSlot, hasFlashlight, onToggleFlashlight]);
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Keyboard handlers: Q (duduk), E (berdiri), X (interact)
@@ -347,11 +501,34 @@ export const BombScene: React.FC<BombSceneProps> = ({
         return;
       }
 
-      // F = Toggle Senter (Flashlight)
+      // 1 = Pegang / Lepas Senter (Slot 1)
+      if (e.key === '1') {
+        if (hasFlashlight) {
+          sound.playKeypadClick();
+          setActiveSlot(prev => (prev === 1 ? null : 1));
+        }
+        return;
+      }
+
+      // 2 = Pegang / Buka Kertas Hint atau Kunci (Slot 2)
+      if (e.key === '2') {
+        if (hasHintPaper || hasKey) {
+          sound.playKeypadClick();
+          setActiveSlot(prev => (prev === 2 ? null : 2));
+          if (hasHintPaper) {
+            onOpenHintPaper();
+          }
+        }
+        return;
+      }
+
+      // F = Toggle Senter jika sudah diambil / pegang
       if (e.key.toLowerCase() === 'f') {
-        sound.playKeypadClick();
-        if (!hasFlashlight) onPickUpFlashlight();
-        onToggleFlashlight();
+        if (hasFlashlight) {
+          sound.playKeypadClick();
+          if (activeSlot !== 1) setActiveSlot(1);
+          onToggleFlashlight();
+        }
         return;
       }
 
@@ -369,9 +546,16 @@ export const BombScene: React.FC<BombSceneProps> = ({
           return;
         }
         if (stance === 'standing') {
+          const dFlashlight = getDistToFlashlight();
           const dKey = getDistToKey();
           const dChest = getDistToChest();
 
+          if (dFlashlight < 2.5 && !hasFlashlight) {
+            sound.playVictory();
+            onPickUpFlashlight();
+            setActiveSlot(1);
+            return;
+          }
           if (dKey < 2.8 && !hasKey) {
             setIsRiddleOpen(true);
             return;
@@ -382,6 +566,7 @@ export const BombScene: React.FC<BombSceneProps> = ({
               else sound.playPenaltyBuzzer();
             } else if (!hasHintPaper) {
               onPickUpHintPaper();
+              setActiveSlot(2);
             } else {
               onOpenHintPaper();
             }
@@ -407,7 +592,7 @@ export const BombScene: React.FC<BombSceneProps> = ({
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
     };
-  }, [stance, isInteracting, isRiddleOpen, isPointerLocked, hasKey, isChestOpen, hasFlashlight, onToggleFlashlight, onPickUpFlashlight, hasHintPaper, onPickUpHintPaper, onOpenHintPaper, onPickUpKey, onOpenChest, onOpenClueBook]);
+  }, [stance, isInteracting, isRiddleOpen, isPointerLocked, hasKey, isChestOpen, hasFlashlight, activeSlot, onToggleFlashlight, onPickUpFlashlight, hasHintPaper, onPickUpHintPaper, onOpenHintPaper, onPickUpKey, onOpenChest, onOpenClueBook]);
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Quick Camera Presets (Front & Back Face)
@@ -497,8 +682,16 @@ export const BombScene: React.FC<BombSceneProps> = ({
           <pointLight position={[0, -0.5, 2.8]} intensity={0.3} color="#f59e0b" distance={9} />
           <pointLight position={[0, 0.5, -2.8]} intensity={0.3} color="#38bdf8" distance={9} />
 
-          {/* Tactical Focused Flashlight (Active when isFlashlightOn) */}
-          <FlashlightLight isOn={isFlashlightOn} />
+          {/* Tactical Focused Flashlight (Active only when holding slot 1 AND flashlight is ON) */}
+          <FlashlightLight isOn={activeSlot === 1 && hasFlashlight && isFlashlightOn} />
+
+          {/* First-Person Hand Viewmodel (Arm & Hand holding active item) */}
+          <FirstPersonHand
+            activeSlot={activeSlot}
+            hasFlashlight={hasFlashlight}
+            isFlashlightOn={isFlashlightOn}
+            hasHintPaper={hasHintPaper}
+          />
 
           <Suspense fallback={null}>
             {/* Hostage Room Environment with Heavy Steel Security Door */}
@@ -514,14 +707,19 @@ export const BombScene: React.FC<BombSceneProps> = ({
                   else sound.playPenaltyBuzzer();
                 } else if (!hasHintPaper) {
                   onPickUpHintPaper();
+                  setActiveSlot(2);
                 } else {
                   onOpenHintPaper();
                 }
               }}
-              onPickUpHintPaper={onPickUpHintPaper}
+              onPickUpHintPaper={() => {
+                onPickUpHintPaper();
+                setActiveSlot(2);
+              }}
               onPickUpFlashlight={() => {
+                sound.playVictory();
                 onPickUpFlashlight();
-                if (!isFlashlightOn) onToggleFlashlight();
+                setActiveSlot(1);
               }}
               playerPos={[playerPos.current.x, playerPos.current.y, playerPos.current.z]}
             />
@@ -863,6 +1061,24 @@ export const BombScene: React.FC<BombSceneProps> = ({
             </div>
           )}
 
+          {/* Near Flashlight on Table Prompt */}
+          {nearFlashlight && !hasFlashlight && (
+            <div className="bg-cyan-500 text-zinc-950 font-black text-xs px-4 py-2 rounded-xl shadow-2xl animate-bounce border-2 border-white pointer-events-auto flex items-center gap-2">
+              <Flashlight className="w-4 h-4 fill-current" />
+              <span>SENTER TAKTIS DITEMUKAN DI SEBELAH BOM! TEKAN [X] UNTUK AMBIL!</span>
+              <button
+                onClick={() => {
+                  sound.playVictory();
+                  onPickUpFlashlight();
+                  setActiveSlot(1);
+                }}
+                className="ml-2 px-2 py-0.5 rounded bg-zinc-950 text-cyan-300 text-[10px] uppercase font-bold"
+              >
+                AMBIL
+              </button>
+            </div>
+          )}
+
           {/* Near Door Prompt */}
           {nearDoor && (
             <div className="bg-zinc-950/95 border-2 border-red-500/80 text-white font-mono text-xs px-4 py-2 rounded-xl shadow-2xl pointer-events-auto flex items-center gap-2 animate-pulse">
@@ -875,87 +1091,131 @@ export const BombScene: React.FC<BombSceneProps> = ({
         </div>
       )}
 
-      {/* ── KOTAK ITEM / INVENTORY HUD ────────────────────────────────────────── */}
-      <div className="absolute bottom-4 left-4 right-4 pointer-events-none z-20 flex flex-col sm:flex-row items-center justify-between gap-3">
-        {/* INVENTORY SLOTS (Kotak Item) */}
-        <div className="bg-zinc-950/95 backdrop-blur border-2 border-yellow-500/60 p-1.5 rounded-xl text-xs font-mono text-zinc-300 pointer-events-auto shadow-2xl flex flex-wrap items-center gap-2">
-          <div className="px-2 py-1 text-[10px] font-black uppercase text-yellow-400 border-r border-zinc-800 tracking-wider">
-            KOTAK ITEM
-          </div>
+      {/* ── 2-SLOT HOTBAR INVENTORY (Ditengah Bawah Layar) ────────────────────── */}
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 pointer-events-auto z-30 flex items-center gap-2.5">
+        {/* SLOT 1 (Senter) */}
+        <button
+          onClick={() => {
+            if (hasFlashlight) {
+              sound.playKeypadClick();
+              if (activeSlot === 1) {
+                // If already holding, click toggles flashlight light
+                onToggleFlashlight();
+              } else {
+                setActiveSlot(1);
+              }
+            }
+          }}
+          className={`relative w-14 h-14 rounded-xl flex flex-col items-center justify-center transition-all duration-150 select-none ${
+            activeSlot === 1
+              ? 'bg-zinc-900/95 border-2 border-yellow-400 shadow-xl shadow-yellow-500/25 -translate-y-1'
+              : 'bg-black/80 hover:bg-zinc-900/80 border border-zinc-700/80'
+          }`}
+          title={
+            hasFlashlight
+              ? (activeSlot === 1
+                ? 'Senter Dipegang (Klik Kiri / [F] untuk ON/OFF)'
+                : 'Tekan [1] untuk Pegang Senter')
+              : 'Slot 1: Kosong (Ambil senter di meja)'
+          }
+        >
+          {/* Slot Number Label 1 */}
+          <span className="absolute top-1 left-1.5 text-[10px] font-mono font-black text-zinc-400 leading-none">
+            1
+          </span>
 
-          {/* ITEM 1: KUNCI PETI */}
-          <div
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition ${
-              hasKey
-                ? 'bg-yellow-950/60 border-yellow-500/80 text-yellow-300 shadow-md shadow-yellow-500/20'
-                : 'bg-zinc-900 border-zinc-800 text-zinc-600'
-            }`}
-            title={hasKey ? 'Kunci Emas Peti Intelijen (Dimiliki)' : 'Kunci Peti (Belum Ditemukan)'}
-          >
-            <Key className={`w-3.5 h-3.5 ${hasKey ? 'text-yellow-400 fill-yellow-400' : 'text-zinc-600'}`} />
-            <span>KUNCI {hasKey ? '1/1' : '0/1'}</span>
-          </div>
-
-          {/* ITEM 2: SENTER (FLASHLIGHT) */}
-          <button
-            onClick={() => {
-              if (!hasFlashlight) onPickUpFlashlight();
-              onToggleFlashlight();
-            }}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition active:scale-95 ${
-              isFlashlightOn
-                ? 'bg-cyan-950/80 border-cyan-400 text-cyan-200 ring-2 ring-cyan-400/40 shadow-lg shadow-cyan-500/30'
-                : hasFlashlight
-                ? 'bg-zinc-800 border-zinc-600 text-zinc-300 hover:border-cyan-400'
-                : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-yellow-500'
-            }`}
-            title="Klik atau Tekan [F] untuk Nyalakan/Matikan Senter Sorot Fokus"
-          >
-            {isFlashlightOn ? (
-              <Flashlight className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
-            ) : (
-              <FlashlightOff className="w-3.5 h-3.5 text-zinc-400" />
-            )}
-            <span>SENTER [{isFlashlightOn ? 'NYALA' : 'MATI'}] (F)</span>
-          </button>
-
-          {/* ITEM 3: KERTAS HINT DARI PETI */}
-          {hasHintPaper ? (
-            <button
-              onClick={onOpenHintPaper}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 text-xs font-black shadow-lg shadow-emerald-500/30 animate-pulse transition active:scale-95 glow-green"
-              title="Buka & Baca Kertas Dokumen Hint Peti Intelijen [H]"
-            >
-              <FileText className="w-3.5 h-3.5 text-emerald-400" />
-              <span>BACA KERTAS HINT [H]</span>
-            </button>
-          ) : isChestOpen ? (
-            <button
-              onClick={onPickUpHintPaper}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-yellow-500/70 bg-yellow-950/50 hover:bg-yellow-900 text-yellow-300 text-xs font-bold transition active:scale-95"
-              title="Peti sudah terbuka! Klik untuk mengambil Kertas Hint"
-            >
-              <FileText className="w-3.5 h-3.5 text-yellow-400" />
-              <span>AMBIL KERTAS HINT DARI PETI</span>
-            </button>
+          {hasFlashlight ? (
+            <>
+              {isFlashlightOn && activeSlot === 1 ? (
+                <Flashlight className="w-6 h-6 text-yellow-300 animate-pulse drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
+              ) : (
+                <Flashlight className={`w-6 h-6 ${activeSlot === 1 ? 'text-zinc-200' : 'text-zinc-500'}`} />
+              )}
+              {/* Status indicator dot */}
+              <div
+                className={`absolute bottom-1 right-1.5 w-1.5 h-1.5 rounded-full ${
+                  isFlashlightOn && activeSlot === 1
+                    ? 'bg-emerald-400 shadow-[0_0_4px_#34d399]'
+                    : 'bg-zinc-600'
+                }`}
+              />
+            </>
           ) : (
-            <div
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-600 text-xs font-bold"
-              title="Buka Peti Rahasia untuk Mendapatkan Dokumen Hint"
-            >
-              <FileText className="w-3.5 h-3.5 text-zinc-600" />
-              <span>KERTAS HINT (DALAM PETI)</span>
-            </div>
+            /* Empty slot */
+            <div className="w-5 h-5 rounded border border-dashed border-zinc-800" />
           )}
-        </div>
 
-        {modules[currentModuleIndex] && (
-          <div className="bg-zinc-900/95 backdrop-blur border border-yellow-500/50 px-4 py-2 rounded-lg text-xs font-mono text-zinc-200 max-w-lg pointer-events-auto shadow-2xl">
-            <span className="text-yellow-400 font-bold uppercase mr-1.5">[{modules[currentModuleIndex].category}]:</span>
-            <span>{modules[currentModuleIndex].description}</span>
-          </div>
-        )}
+          {activeSlot === 1 && (
+            <div className="absolute -top-1.5 right-1 w-2 h-2 rounded-full bg-yellow-400" />
+          )}
+        </button>
+
+        {/* SLOT 2 (Kertas Hint atau Kunci) */}
+        <button
+          onClick={() => {
+            if (hasHintPaper || hasKey) {
+              sound.playKeypadClick();
+              if (activeSlot === 2) {
+                if (hasHintPaper) onOpenHintPaper();
+                else setActiveSlot(null);
+              } else {
+                setActiveSlot(2);
+                if (hasHintPaper) onOpenHintPaper();
+              }
+            }
+          }}
+          className={`relative w-14 h-14 rounded-xl flex flex-col items-center justify-center transition-all duration-150 select-none ${
+            activeSlot === 2
+              ? 'bg-zinc-900/95 border-2 border-emerald-400 shadow-xl shadow-emerald-500/25 -translate-y-1'
+              : 'bg-black/80 hover:bg-zinc-900/80 border border-zinc-700/80'
+          }`}
+          title={
+            hasHintPaper
+              ? (activeSlot === 2
+                ? 'Kertas Hint Dipegang (Klik / [H] untuk Baca Catatan)'
+                : 'Tekan [2] untuk Pegang Kertas Hint')
+              : hasKey
+              ? 'Kunci Emas Peti Intelijen'
+              : 'Slot 2: Kosong'
+          }
+        >
+          {/* Slot Number Label 2 */}
+          <span className="absolute top-1 left-1.5 text-[10px] font-mono font-black text-zinc-400 leading-none">
+            2
+          </span>
+
+          {hasHintPaper ? (
+            <>
+              <FileText className={`w-6 h-6 ${activeSlot === 2 ? 'text-emerald-300 drop-shadow-[0_0_6px_rgba(52,211,153,0.8)]' : 'text-emerald-500'}`} />
+              <span className="absolute bottom-1 text-[8px] font-mono font-bold text-emerald-400 leading-none">
+                HINT
+              </span>
+            </>
+          ) : hasKey ? (
+            <>
+              <Key className="w-6 h-6 text-yellow-400 fill-yellow-400/40" />
+              <span className="absolute bottom-1 text-[8px] font-mono font-bold text-yellow-400 leading-none">
+                KEY
+              </span>
+            </>
+          ) : (
+            /* Empty slot */
+            <div className="w-5 h-5 rounded border border-dashed border-zinc-800" />
+          )}
+
+          {activeSlot === 2 && (
+            <div className="absolute -top-1.5 right-1 w-2 h-2 rounded-full bg-emerald-400" />
+          )}
+        </button>
       </div>
+
+      {/* Module description overlay (bottom right when interacting) */}
+      {modules[currentModuleIndex] && isInteracting && (
+        <div className="absolute bottom-4 right-4 bg-zinc-900/95 backdrop-blur border border-yellow-500/50 px-3.5 py-1.5 rounded-lg text-xs font-mono text-zinc-200 max-w-sm pointer-events-auto shadow-2xl z-20">
+          <span className="text-yellow-400 font-bold uppercase mr-1.5">[{modules[currentModuleIndex].category}]:</span>
+          <span>{modules[currentModuleIndex].description}</span>
+        </div>
+      )}
     </div>
   );
 };
