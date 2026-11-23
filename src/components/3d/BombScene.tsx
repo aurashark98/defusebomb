@@ -72,15 +72,25 @@ function FlashlightLight({ isOn }: { isOn: boolean }) {
   if (!isOn) return null;
 
   return (
-    <spotLight
-      ref={lightRef}
-      intensity={9.5}
-      distance={35}
-      angle={Math.PI / 13}
-      penumbra={0.15}
-      color="#f8fafc"
-      castShadow
-    />
+    <group>
+      {/* Main Ultra-Bright Tactical Beam with Wide Coverage */}
+      <spotLight
+        ref={lightRef}
+        intensity={24.0}
+        distance={45}
+        angle={Math.PI / 5.5}
+        penumbra={0.35}
+        color="#ffffff"
+        castShadow
+      />
+      {/* Soft Forward Spill Light to naturally illuminate immediate surroundings */}
+      <pointLight
+        position={[camera.position.x, camera.position.y, camera.position.z]}
+        intensity={2.2}
+        distance={14}
+        color="#f1f5f9"
+      />
+    </group>
   );
 }
 
@@ -181,7 +191,7 @@ function FirstPersonHand({
             </mesh>
             {/* Lens Flare Light */}
             {isFlashlightOn && (
-              <pointLight position={[0, 0, -0.24]} distance={0.8} intensity={2.5} color="#ffffff" />
+              <pointLight position={[0, 0, -0.24]} distance={1.5} intensity={4.5} color="#ffffff" />
             )}
           </group>
         </group>
