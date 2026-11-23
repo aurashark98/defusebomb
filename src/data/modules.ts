@@ -1,7 +1,7 @@
 import { DefusalModule, GameSettings } from '../types/game';
 
 export const DEFAULT_SETTINGS: GameSettings = {
-  totalTimeSeconds: 600, // 10 menit
+  totalTimeSeconds: 1200, // 20 menit
   maxStrikes: 3,
   penaltyPerStrikeSeconds: 45, // -45 detik tiap salah
 };
@@ -212,11 +212,11 @@ export const INITIAL_MODULES: DefusalModule[] = [
     isDefused: false,
     penaltySeconds: 45,
     pipelineSteps: [
-      { id: 'step-1', name: '1. Train / Test Data Split', order: 1 },
-      { id: 'step-2', name: '2. Missing Value Imputation (Fit train, transform test)', order: 2 },
-      { id: 'step-3', name: '3. Feature Scaling & Encoding', order: 3 },
-      { id: 'step-4', name: '4. Model Training (Fit Classifier)', order: 4 },
-      { id: 'step-5', name: '5. Model Evaluation pada Test Set', order: 5 },
+      { id: 'step-1', name: 'Train / Test Data Split', order: 1 },
+      { id: 'step-2', name: 'Missing Value Imputation (Fit train, transform test)', order: 2 },
+      { id: 'step-3', name: 'Feature Scaling & Encoding', order: 3 },
+      { id: 'step-4', name: 'Model Training (Fit Classifier)', order: 4 },
+      { id: 'step-5', name: 'Model Evaluation pada Test Set', order: 5 },
     ]
   },
   {

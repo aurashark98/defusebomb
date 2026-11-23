@@ -25,6 +25,9 @@ export const App: React.FC = () => {
   // Exploration & Secrets State
   const [hasKey, setHasKey] = useState<boolean>(false);
   const [isChestOpen, setIsChestOpen] = useState<boolean>(false);
+  const [hasFlashlight, setHasFlashlight] = useState<boolean>(false);
+  const [isFlashlightOn, setIsFlashlightOn] = useState<boolean>(false);
+  const [hasHintPaper, setHasHintPaper] = useState<boolean>(false);
 
   // Settings State (Persisted in localStorage)
   const [settings, setSettings] = useState<AppSettings>(() => {
@@ -39,7 +42,7 @@ export const App: React.FC = () => {
 
   const [modules, setModules] = useState<DefusalModule[]>(() => getFreshModules());
   const [currentModuleIndex, setCurrentModuleIndex] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number>(DEFAULT_SETTINGS.totalTimeSeconds); // 600s (10 mins)
+  const [timeLeft, setTimeLeft] = useState<number>(DEFAULT_SETTINGS.totalTimeSeconds); // 600s (20 mins)
   const [strikes, setStrikes] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [penaltyNotification, setPenaltyNotification] = useState<string | null>(null);
@@ -160,23 +163,39 @@ export const App: React.FC = () => {
     setTimeout(() => setPenaltyNotification(null), 3000);
   };
 
+  // Pick up hint paper from chest
+  const handlePickUpHintPaper = () => {
+    setHasHintPaper(true);
+    setPenaltyNotification('KERTAS HINT DIAMBIL! Tekan [H] untuk baca.');
+    setTimeout(() => setPenaltyNotification(null), 3000);
+  };
+
+  // Pick up flashlight near bomb
+  const handlePickUpFlashlight = () => {
+    setHasFlashlight(true);
+    setPenaltyNotification('SENTER DIAMBIL! Tekan [F] untuk nyalakan/matikan.');
+    setTimeout(() => setPenaltyNotification(null), 3000);
+  };
+
   // Open secret chest with key
   const handleOpenChest = () => {
     sound.playVictory();
     setIsChestOpen(true);
-    setIsClueModalOpen(true);
   };
 
   // Start / Restart game (Completely pristine reset!)
   const handleStartGame = () => {
     setGameState('playing');
-    setTimeLeft(DEFAULT_SETTINGS.totalTimeSeconds); // 600 seconds
+    setTimeLeft(DEFAULT_SETTINGS.totalTimeSeconds); // 1200 seconds
     setStrikes(0);
     setPenaltyNotification(null);
     setCurrentModuleIndex(0);
     setHasKey(false);
     setIsChestOpen(false);
     setIsClueModalOpen(false);
+    setHasFlashlight(false);
+    setIsFlashlightOn(false);
+    setHasHintPaper(false);
     // Deep clone fresh modules
     setModules(getFreshModules());
     // Remount whole 3D/2D game components fresh
@@ -223,7 +242,7 @@ export const App: React.FC = () => {
                   </div>
                   <div>
                     <h1 className="text-xs sm:text-sm font-black tracking-wide text-zinc-100">
-                      AI DEFUSAL UNIT // 10 MIN OPERATION
+                      AI DEFUSAL UNIT // 20 MIN OPERATION
                     </h1>
                   </div>
                 </div>
@@ -286,6 +305,13 @@ export const App: React.FC = () => {
               onPickUpKey={handlePickUpKey}
               onOpenChest={handleOpenChest}
               onOpenClueBook={() => setIsClueModalOpen(true)}
+              hasFlashlight={hasFlashlight}
+              isFlashlightOn={isFlashlightOn}
+              onToggleFlashlight={() => setIsFlashlightOn(prev => !prev)}
+              onPickUpFlashlight={handlePickUpFlashlight}
+              hasHintPaper={hasHintPaper}
+              onPickUpHintPaper={handlePickUpHintPaper}
+              onOpenHintPaper={() => setIsClueModalOpen(true)}
               penaltyNotification={penaltyNotification}
             />
           </main>

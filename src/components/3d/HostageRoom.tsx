@@ -6,16 +6,24 @@ import { Text } from '@react-three/drei';
 interface HostageRoomProps {
   hasKey: boolean;
   isChestOpen: boolean;
+  hasHintPaper: boolean;
+  hasFlashlight: boolean;
   onPickUpKey: () => void;
   onInteractChest: () => void;
+  onPickUpHintPaper: () => void;
+  onPickUpFlashlight: () => void;
   playerPos: [number, number, number];
 }
 
 export const HostageRoom: React.FC<HostageRoomProps> = ({
   hasKey,
   isChestOpen,
+  hasHintPaper,
+  hasFlashlight,
   onPickUpKey,
   onInteractChest,
+  onPickUpHintPaper,
+  onPickUpFlashlight,
   playerPos
 }) => {
   const hangingLampRef = useRef<THREE.Group>(null);
@@ -349,14 +357,14 @@ export const HostageRoom: React.FC<HostageRoomProps> = ({
         </mesh>
 
         {/* Secret Intel Clue Document */}
-        {isChestOpen && (
-          <group position={[0, 0.45, 0]}>
-            <mesh>
-              <boxGeometry args={[1.1, 0.1, 0.8]} />
-              <meshStandardMaterial color="#fef08a" emissive="#fde047" emissiveIntensity={0.5} />
+        {isChestOpen && !hasHintPaper && (
+          <group position={[0, 0.45, 0]} onClick={onPickUpHintPaper}>
+            <mesh castShadow>
+              <boxGeometry args={[1.1, 0.08, 0.8]} />
+              <meshStandardMaterial color="#fef08a" emissive="#fde047" emissiveIntensity={0.6} roughness={0.4} />
             </mesh>
-            <Text position={[0, 0.12, 0]} fontSize={0.1} color="#000000" fontWeight="bold">
-              AI INTEL NOTEBOOK
+            <Text position={[0, 0.1, 0]} fontSize={0.09} color="#1c1917" fontWeight="bold">
+              KERTAS HINT PROTOKOL DEFUSAL
             </Text>
           </group>
         )}
@@ -365,7 +373,9 @@ export const HostageRoom: React.FC<HostageRoomProps> = ({
           <group position={[0, 1.8, 0]}>
             <Text position={[0, 0.2, 0]} fontSize={0.18} color={isChestOpen ? "#10b981" : hasKey ? "#fbbf24" : "#f87171"}>
               {isChestOpen
-                ? "[PETI TERBUKA] TEKAN [X] BACA PETUNJUK"
+                ? (!hasHintPaper
+                  ? "[PETI TERBUKA] TEKAN [X] AMBIL KERTAS HINT"
+                  : "[PETI TERBUKA] KERTAS HINT SUDAH DIAMBIL [H]")
                 : hasKey
                 ? "[PUNYA KUNCI] TEKAN [X] BUKA PETI"
                 : "[PETI TERKUNCI] CARI KUNCI DI RUANGAN!"}
@@ -502,17 +512,58 @@ export const HostageRoom: React.FC<HostageRoomProps> = ({
         </mesh>
         <mesh position={[0, -0.38, 0]}>
           <sphereGeometry args={[0.16, 16, 16]} />
-          <meshStandardMaterial color="#fffbeb" emissive="#f59e0b" emissiveIntensity={3.5} />
+          <meshStandardMaterial color="#fffbeb" emissive="#f59e0b" emissiveIntensity={1.2} />
         </mesh>
+        {/* Dimmer mood lighting because flashlight is available */}
         <spotLight
           position={[0, -0.4, 0]}
           angle={Math.PI / 2.3}
           penumbra={0.45}
-          intensity={3.8}
+          intensity={1.2}
           color="#fef08a"
-          distance={16}
+          distance={14}
           castShadow
         />
+      </group>
+
+      {/* ================= TACTICAL FLASHLIGHT BESIDE BOMB ON DESK ================= */}
+      <group position={[3.2, -2.15, 0.4]} rotation={[0, 0.35, 0]} onClick={onPickUpFlashlight}>
+        {/* Tactical Flashlight Body */}
+        <mesh rotation={[0, 0, Math.PI / 2]} castShadow>
+          <cylinderGeometry args={[0.08, 0.08, 0.75, 16]} />
+          <meshStandardMaterial color="#18181b" metalness={0.9} roughness={0.25} />
+        </mesh>
+        {/* Bezel Ring */}
+        <mesh position={[-0.2, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.085, 0.085, 0.05, 16]} />
+          <meshStandardMaterial color="#eab308" metalness={0.8} roughness={0.3} />
+        </mesh>
+        {/* Flashlight Head */}
+        <mesh position={[-0.42, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
+          <cylinderGeometry args={[0.15, 0.09, 0.25, 16]} />
+          <meshStandardMaterial color="#27272a" metalness={0.95} roughness={0.15} />
+        </mesh>
+        {/* Front Glass Lens */}
+        <mesh position={[-0.55, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <circleGeometry args={[0.14, 16]} />
+          <meshStandardMaterial color="#e0f2fe" emissive="#38bdf8" emissiveIntensity={0.6} />
+        </mesh>
+        {/* Tactical Grip Knurling Bands */}
+        {[-0.05, 0.08, 0.2].map((gx, gi) => (
+          <mesh key={gi} position={[gx, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.083, 0.083, 0.06, 16]} />
+            <meshStandardMaterial color="#3f3f46" metalness={0.8} roughness={0.5} />
+          </mesh>
+        ))}
+        {/* Tailcap Switch */}
+        <mesh position={[0.39, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.075, 0.075, 0.05, 16]} />
+          <meshStandardMaterial color="#059669" emissive="#10b981" emissiveIntensity={1.5} />
+        </mesh>
+        {/* Floating Label */}
+        <Text position={[0, 0.32, 0]} fontSize={0.11} color="#38bdf8" fontWeight="bold">
+          {hasFlashlight ? "[SENTER AKTIF - TEKAN F]" : "[KLIK / F] AMBIL SENTER"}
+        </Text>
       </group>
 
       {/* ================= ROOM WALLS, CEILING & GRID FLOOR (GTA BUNKER STYLE) ================= */}

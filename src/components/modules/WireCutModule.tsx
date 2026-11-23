@@ -34,6 +34,11 @@ export const WireCutModule: React.FC<WireCutModuleProps> = ({
     }
   };
 
+  const getCorrectOverlayClass = (wire: WireOption) => {
+    if (!cutWireIds.includes(wire.id) || !wire.isCorrect) return '';
+    return 'ring-4 ring-emerald-400 ring-offset-2 ring-offset-zinc-900';
+  };
+
   const getWireColorClasses = (color: WireOption['color']) => {
     switch (color) {
       case 'red': return 'bg-red-500 border-red-700 shadow-red-500/50';
@@ -64,7 +69,11 @@ export const WireCutModule: React.FC<WireCutModuleProps> = ({
             return (
               <div
                 key={wire.id}
-                className="group relative flex items-center justify-between bg-zinc-900/80 p-3 rounded-md border border-zinc-800 hover:border-zinc-700 transition"
+                className={`group relative flex items-center justify-between p-3 rounded-md border transition ${
+                  cutWireIds.includes(wire.id) && wire.isCorrect
+                    ? 'bg-emerald-950/60 border-emerald-400 ring-2 ring-emerald-400/50 shadow-lg shadow-emerald-500/30'
+                    : 'bg-zinc-900/80 border-zinc-800 hover:border-zinc-700'
+                }`}
               >
                 {/* Left Connector Terminal */}
                 <div className="w-4 h-6 bg-amber-600/60 rounded border border-amber-500/70 flex-shrink-0 flex items-center justify-center">
@@ -76,9 +85,16 @@ export const WireCutModule: React.FC<WireCutModuleProps> = ({
                   {isCut ? (
                     <div className="flex items-center w-full justify-between">
                       <div className={`h-2.5 w-[38%] rounded-l ${getWireColorClasses(wire.color)}`} />
-                      <div className="text-red-500 font-black text-xs uppercase tracking-widest px-2 animate-pulse">
-                        [ SEVERED ]
-                      </div>
+                      {wire.isCorrect ? (
+                        <div className="text-emerald-300 font-black text-xs uppercase tracking-widest px-2 flex items-center gap-1">
+                          <span className="text-emerald-400 text-base">✓</span>
+                          <span className="text-emerald-300">BENAR!</span>
+                        </div>
+                      ) : (
+                        <div className="text-red-500 font-black text-xs uppercase tracking-widest px-2 animate-pulse">
+                          [ SEVERED ]
+                        </div>
+                      )}
                       <div className={`h-2.5 w-[38%] rounded-r ${getWireColorClasses(wire.color)}`} />
                     </div>
                   ) : (

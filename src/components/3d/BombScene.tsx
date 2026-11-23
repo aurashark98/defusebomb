@@ -11,7 +11,8 @@ import { KeyRiddleModal } from '../menu/KeyRiddleModal';
 import { sound } from '../../utils/audio';
 import {
   RotateCcw, Volume2, VolumeX, ShieldAlert, Layers, Settings,
-  Home, BookOpen, Key, Lock, Unlock, FileText, MousePointer2, Focus, Eye
+  Home, BookOpen, Key, Lock, Unlock, FileText, MousePointer2, Focus, Eye,
+  Flashlight, FlashlightOff
 } from 'lucide-react';
 
 interface BombSceneProps {
@@ -35,7 +36,52 @@ interface BombSceneProps {
   onPickUpKey: () => void;
   onOpenChest: () => void;
   onOpenClueBook: () => void;
+  hasFlashlight: boolean;
+  isFlashlightOn: boolean;
+  onToggleFlashlight: () => void;
+  onPickUpFlashlight: () => void;
+  hasHintPaper: boolean;
+  onPickUpHintPaper: () => void;
+  onOpenHintPaper: () => void;
   penaltyNotification: string | null;
+}
+
+// Tactical Focused Flashlight (follows camera orientation and position)
+function FlashlightLight({ isOn }: { isOn: boolean }) {
+  const lightRef = useRef<THREE.SpotLight>(null);
+  const targetRef = useRef<THREE.Object3D>(new THREE.Object3D());
+  const { camera, scene } = useThree();
+
+  useEffect(() => {
+    const targetObj = targetRef.current;
+    scene.add(targetObj);
+    return () => {
+      scene.remove(targetObj);
+    };
+  }, [scene]);
+
+  useFrame(() => {
+    if (!lightRef.current) return;
+    lightRef.current.position.copy(camera.position);
+    const forward = new THREE.Vector3();
+    camera.getWorldDirection(forward);
+    targetRef.current.position.copy(camera.position).addScaledVector(forward, 15);
+    lightRef.current.target = targetRef.current;
+  });
+
+  if (!isOn) return null;
+
+  return (
+    <spotLight
+      ref={lightRef}
+      intensity={9.5}
+      distance={35}
+      angle={Math.PI / 13}
+      penumbra={0.15}
+      color="#f8fafc"
+      castShadow
+    />
+  );
 }
 
 // FPS Limiter
@@ -125,6 +171,13 @@ export const BombScene: React.FC<BombSceneProps> = ({
   onPickUpKey,
   onOpenChest,
   onOpenClueBook,
+  hasFlashlight,
+  isFlashlightOn,
+  onToggleFlashlight,
+  onPickUpFlashlight,
+  hasHintPaper,
+  onPickUpHintPaper,
+  onOpenHintPaper,
   penaltyNotification,
 }) => {
   const controlsRef = useRef<OrbitControlsImpl>(null);
@@ -294,8 +347,23 @@ export const BombScene: React.FC<BombSceneProps> = ({
         return;
       }
 
-      // X / F = Interaksi
-      if (e.key.toLowerCase() === 'x' || e.key.toLowerCase() === 'f') {
+      // F = Toggle Senter (Flashlight)
+      if (e.key.toLowerCase() === 'f') {
+        sound.playKeypadClick();
+        if (!hasFlashlight) onPickUpFlashlight();
+        onToggleFlashlight();
+        return;
+      }
+
+      // H = Buka Kertas Hint (jika sudah diambil)
+      if (e.key.toLowerCase() === 'h' && hasHintPaper) {
+        sound.playKeypadClick();
+        onOpenHintPaper();
+        return;
+      }
+
+      // X = Interaksi
+      if (e.key.toLowerCase() === 'x') {
         if (stance === 'sitting') {
           toggleInteract();
           return;
@@ -312,8 +380,10 @@ export const BombScene: React.FC<BombSceneProps> = ({
             if (!isChestOpen) {
               if (hasKey) onOpenChest();
               else sound.playPenaltyBuzzer();
+            } else if (!hasHintPaper) {
+              onPickUpHintPaper();
             } else {
-              onOpenClueBook();
+              onOpenHintPaper();
             }
           }
         }
@@ -337,7 +407,7 @@ export const BombScene: React.FC<BombSceneProps> = ({
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
     };
-  }, [stance, isInteracting, isRiddleOpen, isPointerLocked, hasKey, isChestOpen, onPickUpKey, onOpenChest, onOpenClueBook]);
+  }, [stance, isInteracting, isRiddleOpen, isPointerLocked, hasKey, isChestOpen, hasFlashlight, onToggleFlashlight, onPickUpFlashlight, hasHintPaper, onPickUpHintPaper, onOpenHintPaper, onPickUpKey, onOpenChest, onOpenClueBook]);
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Quick Camera Presets (Front & Back Face)
@@ -409,38 +479,49 @@ export const BombScene: React.FC<BombSceneProps> = ({
           <color attach="background" args={['#09090d']} />
           <PerspectiveCamera makeDefault position={[0, 0.35, 4.9]} fov={62} near={0.05} far={200} />
 
-          {/* Dynamic GTA Cinematic Lighting */}
-          <ambientLight intensity={0.65} />
+          {/* Dynamic GTA Cinematic Lighting (Dimmer bunker atmosphere for tactical flashlight) */}
+          <ambientLight intensity={0.15} />
           <directionalLight
             position={[5, 11, 6]}
-            intensity={1.8}
+            intensity={0.4}
             color="#fef3c7"
             castShadow={enableShadows}
-            shadow-mapSize={[2048, 2048]}
             shadow-bias={-0.0001}
             shadow-camera-left={-14}
             shadow-camera-right={14}
             shadow-camera-top={14}
             shadow-camera-bottom={-14}
           />
-          <directionalLight position={[-6, 6, -5]} intensity={0.7} color="#38bdf8" />
-          <pointLight position={[0, 3.2, 3.5]} intensity={1.2} color="#ffffff" distance={16} />
-          <pointLight position={[0, -0.5, 2.8]} intensity={0.8} color="#f59e0b" distance={9} />
-          <pointLight position={[0, 0.5, -2.8]} intensity={0.8} color="#38bdf8" distance={9} />
+          <directionalLight position={[-6, 6, -5]} intensity={0.2} color="#38bdf8" />
+          <pointLight position={[0, 3.2, 3.5]} intensity={0.4} color="#ffffff" distance={16} />
+          <pointLight position={[0, -0.5, 2.8]} intensity={0.3} color="#f59e0b" distance={9} />
+          <pointLight position={[0, 0.5, -2.8]} intensity={0.3} color="#38bdf8" distance={9} />
+
+          {/* Tactical Focused Flashlight (Active when isFlashlightOn) */}
+          <FlashlightLight isOn={isFlashlightOn} />
 
           <Suspense fallback={null}>
             {/* Hostage Room Environment with Heavy Steel Security Door */}
             <HostageRoom
               hasKey={hasKey}
               isChestOpen={isChestOpen}
+              hasHintPaper={hasHintPaper}
+              hasFlashlight={hasFlashlight}
               onPickUpKey={() => setIsRiddleOpen(true)}
               onInteractChest={() => {
                 if (!isChestOpen) {
                   if (hasKey) onOpenChest();
                   else sound.playPenaltyBuzzer();
+                } else if (!hasHintPaper) {
+                  onPickUpHintPaper();
                 } else {
-                  onOpenClueBook();
+                  onOpenHintPaper();
                 }
+              }}
+              onPickUpHintPaper={onPickUpHintPaper}
+              onPickUpFlashlight={() => {
+                onPickUpFlashlight();
+                if (!isFlashlightOn) onToggleFlashlight();
               }}
               playerPos={[playerPos.current.x, playerPos.current.y, playerPos.current.z]}
             />
@@ -748,13 +829,23 @@ export const BombScene: React.FC<BombSceneProps> = ({
           {nearChest && (
             <div className="bg-zinc-900 border-2 border-yellow-500 text-white font-black text-xs px-4 py-2 rounded-xl shadow-2xl pointer-events-auto flex items-center gap-2">
               {isChestOpen ? (
-                <>
-                  <Unlock className="w-4 h-4 text-emerald-400" />
-                  <span>PETI TERBUKA! TEKAN [X] UNTUK BACA PETUNJUK!</span>
-                  <button onClick={onOpenClueBook}
-                    className="ml-2 px-2.5 py-1 rounded bg-emerald-500 text-zinc-950 text-[10px] uppercase font-bold"
-                  >BACA</button>
-                </>
+                !hasHintPaper ? (
+                  <>
+                    <Unlock className="w-4 h-4 text-emerald-400" />
+                    <span>PETI TERBUKA! TEKAN [X] UNTUK AMBIL KERTAS HINT!</span>
+                    <button onClick={onPickUpHintPaper}
+                      className="ml-2 px-2.5 py-1 rounded bg-yellow-500 text-zinc-950 text-[10px] uppercase font-bold"
+                    >AMBIL KERTAS HINT</button>
+                  </>
+                ) : (
+                  <>
+                    <FileText className="w-4 h-4 text-emerald-400" />
+                    <span>KERTAS HINT SUDAH DIAMBIL! TEKAN [H] UNTUK BACA!</span>
+                    <button onClick={onOpenHintPaper}
+                      className="ml-2 px-2.5 py-1 rounded bg-emerald-500 text-zinc-950 text-[10px] uppercase font-bold"
+                    >BACA HINT (H)</button>
+                  </>
+                )
               ) : hasKey ? (
                 <>
                   <Key className="w-4 h-4 text-yellow-400" />
@@ -784,18 +875,78 @@ export const BombScene: React.FC<BombSceneProps> = ({
         </div>
       )}
 
-      {/* ── Bottom Status Bar ────────────────────────────────────────────────── */}
-      <div className="absolute bottom-4 left-4 right-4 pointer-events-none z-20 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <div className="bg-black/90 backdrop-blur border border-zinc-800 px-4 py-2 rounded-lg text-xs font-mono text-zinc-300 pointer-events-auto shadow-2xl flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-yellow-400 font-bold">
-            <Key className="w-3.5 h-3.5" />
-            <span>KUNCI: {hasKey ? '1 / 1 (DITEMUKAN ✅)' : '0 / 1 (BELUM ❌)'}</span>
+      {/* ── KOTAK ITEM / INVENTORY HUD ────────────────────────────────────────── */}
+      <div className="absolute bottom-4 left-4 right-4 pointer-events-none z-20 flex flex-col sm:flex-row items-center justify-between gap-3">
+        {/* INVENTORY SLOTS (Kotak Item) */}
+        <div className="bg-zinc-950/95 backdrop-blur border-2 border-yellow-500/60 p-1.5 rounded-xl text-xs font-mono text-zinc-300 pointer-events-auto shadow-2xl flex flex-wrap items-center gap-2">
+          <div className="px-2 py-1 text-[10px] font-black uppercase text-yellow-400 border-r border-zinc-800 tracking-wider">
+            KOTAK ITEM
           </div>
-          <div className="h-3 w-px bg-zinc-700" />
-          <div className="flex items-center gap-1.5 text-cyan-400 font-bold">
-            <FileText className="w-3.5 h-3.5" />
-            <span>PETI: {isChestOpen ? 'TERBUKA ✅' : 'TERKUNCI ❌'}</span>
+
+          {/* ITEM 1: KUNCI PETI */}
+          <div
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition ${
+              hasKey
+                ? 'bg-yellow-950/60 border-yellow-500/80 text-yellow-300 shadow-md shadow-yellow-500/20'
+                : 'bg-zinc-900 border-zinc-800 text-zinc-600'
+            }`}
+            title={hasKey ? 'Kunci Emas Peti Intelijen (Dimiliki)' : 'Kunci Peti (Belum Ditemukan)'}
+          >
+            <Key className={`w-3.5 h-3.5 ${hasKey ? 'text-yellow-400 fill-yellow-400' : 'text-zinc-600'}`} />
+            <span>KUNCI {hasKey ? '1/1' : '0/1'}</span>
           </div>
+
+          {/* ITEM 2: SENTER (FLASHLIGHT) */}
+          <button
+            onClick={() => {
+              if (!hasFlashlight) onPickUpFlashlight();
+              onToggleFlashlight();
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition active:scale-95 ${
+              isFlashlightOn
+                ? 'bg-cyan-950/80 border-cyan-400 text-cyan-200 ring-2 ring-cyan-400/40 shadow-lg shadow-cyan-500/30'
+                : hasFlashlight
+                ? 'bg-zinc-800 border-zinc-600 text-zinc-300 hover:border-cyan-400'
+                : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-yellow-500'
+            }`}
+            title="Klik atau Tekan [F] untuk Nyalakan/Matikan Senter Sorot Fokus"
+          >
+            {isFlashlightOn ? (
+              <Flashlight className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
+            ) : (
+              <FlashlightOff className="w-3.5 h-3.5 text-zinc-400" />
+            )}
+            <span>SENTER [{isFlashlightOn ? 'NYALA' : 'MATI'}] (F)</span>
+          </button>
+
+          {/* ITEM 3: KERTAS HINT DARI PETI */}
+          {hasHintPaper ? (
+            <button
+              onClick={onOpenHintPaper}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 text-xs font-black shadow-lg shadow-emerald-500/30 animate-pulse transition active:scale-95 glow-green"
+              title="Buka & Baca Kertas Dokumen Hint Peti Intelijen [H]"
+            >
+              <FileText className="w-3.5 h-3.5 text-emerald-400" />
+              <span>BACA KERTAS HINT [H]</span>
+            </button>
+          ) : isChestOpen ? (
+            <button
+              onClick={onPickUpHintPaper}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-yellow-500/70 bg-yellow-950/50 hover:bg-yellow-900 text-yellow-300 text-xs font-bold transition active:scale-95"
+              title="Peti sudah terbuka! Klik untuk mengambil Kertas Hint"
+            >
+              <FileText className="w-3.5 h-3.5 text-yellow-400" />
+              <span>AMBIL KERTAS HINT DARI PETI</span>
+            </button>
+          ) : (
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-600 text-xs font-bold"
+              title="Buka Peti Rahasia untuk Mendapatkan Dokumen Hint"
+            >
+              <FileText className="w-3.5 h-3.5 text-zinc-600" />
+              <span>KERTAS HINT (DALAM PETI)</span>
+            </div>
+          )}
         </div>
 
         {modules[currentModuleIndex] && (

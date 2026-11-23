@@ -61,7 +61,7 @@ export const HowToPlayModal: React.FC<HowToPlayModalProps> = ({ onClose }) => {
                 <div>
                   <strong className="text-yellow-300 uppercase block mb-0.5">SISA WAKTU DETONATOR</strong>
                   <p className="text-zinc-400">
-                    Kamu memiliki waktu terbatas <span className="text-yellow-400 font-bold">(10 menit)</span> untuk menjelajahi ruangan, menemukan kunci rahasia, membuka dokumen petunjuk di dalam peti, dan memecahkan seluruh modul AI di koper bom sebelum hitungan mundur mencapai 00:00.
+                    Kamu memiliki waktu terbatas <span className="text-yellow-400 font-bold">(20 menit)</span> untuk menjelajahi ruangan, menemukan kunci rahasia, membuka dokumen petunjuk di dalam peti, dan memecahkan seluruh modul AI di koper bom sebelum hitungan mundur mencapai 00:00.
                   </p>
                 </div>
               </div>
@@ -88,12 +88,14 @@ export const HowToPlayModal: React.FC<HowToPlayModalProps> = ({ onClose }) => {
                 <ul className="space-y-1.5 text-zinc-300 font-mono text-[11px]">
                   <li>🏃 <strong>[W, A, S, D]:</strong> Berjalan maju, mundur, kiri, kanan menjelajahi ruangan interogasi.</li>
                   <li>👀 <strong>Geser Mouse / Touchpad:</strong> Melihat ke sekeliling (kiri, kanan, atas, bawah). Klik layar saat berdiri untuk mengaktifkan Mouse Look, tekan [ESC] untuk melepas kursor.</li>
+                  <li>🔦 <strong>[F]:</strong> Nyalakan / Matikan Senter Sorot Fokus. Senter tersedia di sebelah koper bom dan bisa digunakan saat menjelajah maupun saat defuse bom!</li>
+                  <li>📄 <strong>[H]:</strong> Buka & baca Kertas Hint (setelah diambil dari peti rahasia).</li>
                   <li>🪑 <strong>[Q]:</strong> Duduk kembali di kursi meja bom. (Harus duduk dulu sebelum bisa defuse koper!).</li>
                   <li>🧍 <strong>[E]:</strong> Berdiri dari kursi untuk mulai menjelajah ruangan.</li>
                   <li>🔑 <strong>[X]:</strong> Tombol Interaksi:
                     <ul className="pl-4 list-disc text-zinc-400 mt-1 space-y-0.5">
-                      <li>Di dekat rak perkakas: Menjawab teka-teki Elsi untuk mengambil Kunci Emas.</li>
-                      <li>Di dekat lemari sudut belakang: Membuka Peti Rahasia berisi dokumen bocoran AI.</li>
+                      <li>Di dekat rak perkakas: Menjawab teka-teki daya server untuk mengambil Kunci Emas.</li>
+                      <li>Di dekat lemari sudut belakang: Membuka Peti Rahasia & mengambil Kertas Hint.</li>
                       <li>Saat duduk di kursi meja: Mulai interaksi defuse bom koper 3D!</li>
                     </ul>
                   </li>
