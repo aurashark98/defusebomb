@@ -97,10 +97,10 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               ))}
             </div>
 
-            {/* Glowing Red LED Timer Display (05:00) */}
+            {/* Glowing Red LED Timer Display (10:00) */}
             <div className="absolute top-14 left-4 right-4 bg-black/95 border-2 border-red-950 p-2.5 rounded-lg shadow-[inset_0_0_15px_rgba(239,68,68,0.4)] flex items-center justify-center">
               <span className="font-mono font-black text-3xl sm:text-4xl text-red-600 tracking-widest drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] animate-pulse">
-                05:00
+                10:00
               </span>
             </div>
 
@@ -191,7 +191,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             </div>
           </div>
 
-          {/* Status Bar (Bomb Status: ARMED | Time Limit: 05:00) */}
+          {/* Status Bar (Bomb Status: ARMED | Time Limit: 10:00) */}
           <div className="bg-black/80 border border-zinc-800/90 rounded-xl px-4 py-3 flex items-center justify-between text-xs font-mono">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-red-500 fill-red-500/20" />
@@ -202,7 +202,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
             <div className="flex items-center gap-1.5 text-zinc-400">
               <Clock className="w-4 h-4 text-zinc-400" />
-              <span className="font-bold text-zinc-200">TIME LIMIT: 05:00</span>
+              <span className="font-bold text-zinc-200">TIME LIMIT: 10:00</span>
             </div>
           </div>
 
