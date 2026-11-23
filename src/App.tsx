@@ -3,14 +3,6 @@ import { getFreshModules, DEFAULT_SETTINGS } from './data/modules';
 import { DefusalModule } from './types/game';
 import { AppSettings, DEFAULT_APP_SETTINGS } from './types/settings';
 import { sound } from './utils/audio';
-import { DigitalTimer } from './components/DigitalTimer';
-import { ModuleListNav } from './components/ModuleListNav';
-import { WireCutModule } from './components/modules/WireCutModule';
-import { TerminalFixModule } from './components/modules/TerminalFixModule';
-import { ConfusionMatrixKeypadModule } from './components/modules/ConfusionMatrixKeypadModule';
-import { PipelineSequenceModule } from './components/modules/PipelineSequenceModule';
-import { TuningDialModule } from './components/modules/TuningDialModule';
-import { TacticalChoiceModule } from './components/modules/TacticalChoiceModule';
 import { BombScene } from './components/3d/BombScene';
 import { DefusedModal } from './components/DefusedModal';
 import { ExplosionModal } from './components/ExplosionModal';
@@ -18,12 +10,11 @@ import { MainMenu } from './components/menu/MainMenu';
 import { SettingsModal } from './components/menu/SettingsModal';
 import { HowToPlayModal } from './components/menu/HowToPlayModal';
 import { ClueModal } from './components/menu/ClueModal';
-import { Shield, Box, Layers, AlertTriangle, Settings, BookOpen, Home, Key, FileText } from 'lucide-react';
+import { Shield, Settings, BookOpen, Home, FileText } from 'lucide-react';
 
 export const App: React.FC = () => {
   // Game & View States
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'defused' | 'detonated'>('menu');
-  const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState<boolean>(false);
   const [isClueModalOpen, setIsClueModalOpen] = useState<boolean>(false);
@@ -266,168 +257,37 @@ export const App: React.FC = () => {
                   <Settings className="w-4 h-4 text-cyan-400" />
                 </button>
 
-                <button
-                  onClick={() => setViewMode(prev => prev === '3d' ? '2d' : '3d')}
-                  className="px-3 py-1.5 rounded-lg border border-yellow-500/60 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-yellow-400 flex items-center gap-1.5 transition shadow"
-                >
-                  {viewMode === '3d' ? (
-                    <>
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>MODE 2D</span>
-                    </>
-                  ) : (
-                    <>
-                      <Box className="w-3.5 h-3.5" />
-                      <span>MODE 3D</span>
-                    </>
-                  )}
-                </button>
+
               </div>
             </div>
           </header>
 
           {/* Main Container */}
           <main className="flex-1 w-full h-[calc(100vh-56px)] overflow-hidden relative">
-            {viewMode === '3d' ? (
-              /* ================= 3D VIEW (Hostage Room with WASD Walking & Chest Secrets) ================= */
-              <BombScene
-                key={sessionKey}
-                modules={modules}
-                currentModuleIndex={currentModuleIndex}
-                onSelectModule={(idx) => setCurrentModuleIndex(idx)}
-                timeLeft={timeLeft}
-                strikes={strikes}
-                maxStrikes={DEFAULT_SETTINGS.maxStrikes}
-                settings={settings}
-                isMuted={isMuted}
-                onToggleMute={handleToggleMute}
-                onRestart={handleStartGame}
-                onSolveModule={handleSolveModule}
-                onStrike={handleStrike}
-                onSwitchTo2D={() => setViewMode('2d')}
-                onOpenSettings={() => setIsSettingsOpen(true)}
-                onOpenHowToPlay={() => setIsHowToPlayOpen(true)}
-                onGoToMenu={() => setGameState('menu')}
-                hasKey={hasKey}
-                isChestOpen={isChestOpen}
-                onPickUpKey={handlePickUpKey}
-                onOpenChest={handleOpenChest}
-                onOpenClueBook={() => setIsClueModalOpen(true)}
-                penaltyNotification={penaltyNotification}
-              />
-            ) : (
-              /* ================= 2D TACTICAL CONSOLE VIEW ================= */
-              <div key={sessionKey} className="h-full overflow-y-auto max-w-6xl w-full mx-auto p-3 sm:p-6 space-y-4">
-                <DigitalTimer
-                  timeLeft={timeLeft}
-                  strikes={strikes}
-                  maxStrikes={DEFAULT_SETTINGS.maxStrikes}
-                  isMuted={isMuted}
-                  onToggleMute={handleToggleMute}
-                  onRestart={handleStartGame}
-                  penaltyNotification={penaltyNotification}
-                />
-
-                <ModuleListNav
-                  modules={modules}
-                  currentModuleIndex={currentModuleIndex}
-                  onSelectModule={(idx) => setCurrentModuleIndex(idx)}
-                />
-
-                {currentMod && (
-                  <div className="bg-zinc-900 border-2 border-zinc-700 rounded-xl p-4 sm:p-6 shadow-2xl relative overflow-hidden">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3 mb-4">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-widest">
-                            {currentMod.category}
-                          </span>
-                          <span className="text-[10px] text-zinc-500 font-mono">
-                            ID: {currentMod.id.toUpperCase()}
-                          </span>
-                        </div>
-                        <h2 className="text-lg sm:text-xl font-black text-white mt-1">
-                          {currentMod.title}
-                        </h2>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {currentMod.isDefused ? (
-                          <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-950 border border-emerald-500 text-emerald-300 flex items-center gap-1.5 glow-green">
-                            DEFUSED
-                          </span>
-                        ) : (
-                          <span className="px-3 py-1 rounded-full text-xs font-black bg-red-950/80 border border-red-500 text-red-300 flex items-center gap-1.5 animate-pulse">
-                            <AlertTriangle className="w-3.5 h-3.5" />
-                            ACTIVE DETONATOR
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="bg-zinc-950/70 p-3.5 rounded-lg border border-zinc-800/80 text-xs sm:text-sm text-zinc-300 mb-5 leading-relaxed">
-                      {currentMod.description}
-                    </div>
-
-                    {currentMod.type === 'cut-wire' && currentMod.wires && (
-                      <WireCutModule
-                        wires={currentMod.wires}
-                        isDefused={currentMod.isDefused}
-                        onSolve={() => handleSolveModule(currentModuleIndex)}
-                        onStrike={handleStrike}
-                      />
-                    )}
-
-                    {currentMod.type === 'terminal-fix' && currentMod.terminalData && (
-                      <TerminalFixModule
-                        context={currentMod.terminalData.context}
-                        brokenCode={currentMod.terminalData.brokenCode}
-                        options={currentMod.terminalData.options}
-                        isDefused={currentMod.isDefused}
-                        onSolve={() => handleSolveModule(currentModuleIndex)}
-                        onStrike={handleStrike}
-                      />
-                    )}
-
-                    {currentMod.type === 'confusion-matrix' && currentMod.matrixData && (
-                      <ConfusionMatrixKeypadModule
-                        matrixData={currentMod.matrixData}
-                        isDefused={currentMod.isDefused}
-                        onSolve={() => handleSolveModule(currentModuleIndex)}
-                        onStrike={handleStrike}
-                      />
-                    )}
-
-                    {currentMod.type === 'pipeline-sequence' && currentMod.pipelineSteps && (
-                      <PipelineSequenceModule
-                        initialSteps={currentMod.pipelineSteps}
-                        isDefused={currentMod.isDefused}
-                        onSolve={() => handleSolveModule(currentModuleIndex)}
-                        onStrike={handleStrike}
-                      />
-                    )}
-
-                    {currentMod.type === 'tuning-dial' && currentMod.dialData && (
-                      <TuningDialModule
-                        dialData={currentMod.dialData}
-                        isDefused={currentMod.isDefused}
-                        onSolve={() => handleSolveModule(currentModuleIndex)}
-                        onStrike={handleStrike}
-                      />
-                    )}
-
-                    {currentMod.type === 'tactical-choice' && currentMod.tacticalOptions && (
-                      <TacticalChoiceModule
-                        options={currentMod.tacticalOptions}
-                        isDefused={currentMod.isDefused}
-                        onSolve={() => handleSolveModule(currentModuleIndex)}
-                        onStrike={handleStrike}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
+            <BombScene
+              key={sessionKey}
+              modules={modules}
+              currentModuleIndex={currentModuleIndex}
+              onSelectModule={(idx) => setCurrentModuleIndex(idx)}
+              timeLeft={timeLeft}
+              strikes={strikes}
+              maxStrikes={DEFAULT_SETTINGS.maxStrikes}
+              settings={settings}
+              isMuted={isMuted}
+              onToggleMute={handleToggleMute}
+              onRestart={handleStartGame}
+              onSolveModule={handleSolveModule}
+              onStrike={handleStrike}
+              onOpenSettings={() => setIsSettingsOpen(true)}
+              onOpenHowToPlay={() => setIsHowToPlayOpen(true)}
+              onGoToMenu={() => setGameState('menu')}
+              hasKey={hasKey}
+              isChestOpen={isChestOpen}
+              onPickUpKey={handlePickUpKey}
+              onOpenChest={handleOpenChest}
+              onOpenClueBook={() => setIsClueModalOpen(true)}
+              penaltyNotification={penaltyNotification}
+            />
           </main>
         </>
       )}
