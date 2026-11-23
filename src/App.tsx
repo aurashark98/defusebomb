@@ -242,7 +242,7 @@ export const App: React.FC = () => {
                   </div>
                   <div>
                     <h1 className="text-xs sm:text-sm font-black tracking-wide text-zinc-100">
-                      AI DEFUSAL UNIT // 20 MIN OPERATION
+                      BOMBATAG // 20 MIN OPERATION
                     </h1>
                   </div>
                 </div>

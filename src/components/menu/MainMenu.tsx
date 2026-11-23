@@ -178,15 +178,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             <span>CLASSIFIED DEFUSAL PROTOCOL // SEC-LEVEL 5</span>
           </div>
 
-          {/* Main Title: AI DEFUSAL UNIT */}
+          {/* Main Title: BOMBATAG */}
           <div className="text-center space-y-1.5">
-            <h1 className="text-4xl sm:text-5xl font-black italic tracking-wide uppercase drop-shadow-lg">
-              <span className="text-white">AI DEFUSAL </span>
-              <span className="text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]">UNIT</span>
+            <h1 className="text-4xl sm:text-6xl font-black italic tracking-wide uppercase drop-shadow-lg">
+              <span className="text-white">BOMBA</span>
+              <span className="text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]">TAG</span>
             </h1>
             <div className="flex items-center justify-center gap-2 text-xs font-mono text-zinc-400 tracking-wider">
               <span className="w-6 h-px bg-zinc-600" />
-              <span>OPERATION NEURAL DETONATOR 3.0</span>
+              <span>TACTICAL DEFUSAL PROTOCOL</span>
               <span className="w-6 h-px bg-zinc-600" />
             </div>
           </div>
