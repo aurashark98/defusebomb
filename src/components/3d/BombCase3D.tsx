@@ -94,23 +94,23 @@ export const BombCase3D: React.FC<BombCase3DProps> = ({
     onSelectModule(idx);
   };
 
-  // 3 columns x 2 rows
+  // 3 columns x 2 rows (6 on Front Face, 6 on Back Face = 12 Module Slots)
   const slotPositions: [number, number, number][] = [
-    // FRONT FACE (Z = +1.12)
-    [-2.5, 1.05, 1.12],   // Slot 0: Master Timer
-    [0, 1.05, 1.12],      // Slot 1: Module 0 (Wires Imputasi)
-    [2.5, 1.05, 1.12],    // Slot 2: Module 1 (EDA Multikolinearitas)
-    [-2.5, -1.05, 1.12],  // Slot 3: Module 2 (Confusion Matrix Keypad)
-    [0, -1.05, 1.12],     // Slot 4: Module 3 (Terminal CRT Fix)
-    [2.5, -1.05, 1.12],   // Slot 5: Module 4 (Wires High Cardinality)
+    // FRONT FACE (Z = +1.12) - Modules 0 to 5
+    [-2.5, 1.05, 1.12],   // Front Slot 0 (Module 0)
+    [0, 1.05, 1.12],      // Front Slot 1 (Module 1)
+    [2.5, 1.05, 1.12],    // Front Slot 2 (Module 2)
+    [-2.5, -1.05, 1.12],  // Front Slot 3 (Module 3)
+    [0, -1.05, 1.12],     // Front Slot 4 (Module 4)
+    [2.5, -1.05, 1.12],   // Front Slot 5 (Module 5)
 
-    // BACK FACE (Z = -1.12, rotated 180 deg around Y)
-    [-2.5, 1.05, -1.12],  // Back Slot 0: Module 5 (Tuning Dial L1/L2)
-    [0, 1.05, -1.12],     // Back Slot 1: Module 6 (Pipeline Sequence)
-    [2.5, 1.05, -1.12],   // Back Slot 2: Module 7 (Tactical Recall)
-    [-2.5, -1.05, -1.12], // Back Slot 3: Battery Pack / Serial Plate
-    [0, -1.05, -1.12],    // Back Slot 4: Microcontroller PCB
-    [2.5, -1.05, -1.12],  // Back Slot 5: High Voltage Capacitor
+    // BACK FACE (Z = -1.12, rotated 180 deg around Y) - Modules 6 to 11
+    [2.5, 1.05, -1.12],   // Back Slot 0 (Module 6)
+    [0, 1.05, -1.12],     // Back Slot 1 (Module 7)
+    [-2.5, 1.05, -1.12],  // Back Slot 2 (Module 8)
+    [2.5, -1.05, -1.12],  // Back Slot 3 (Module 9)
+    [0, -1.05, -1.12],    // Back Slot 4 (Module 10)
+    [-2.5, -1.05, -1.12], // Back Slot 5 (Module 11)
   ];
 
   const renderModuleContent = (mod: DefusalModule, idx: number) => {
@@ -188,19 +188,46 @@ export const BombCase3D: React.FC<BombCase3DProps> = ({
         />
       </mesh>
 
-      {/* Top Carry Handle */}
-      <group position={[0, 2.45, 0]}>
+      {/* ================= TOP MOUNTED DUAL-SIDED MASTER TIMER CONSOLE ================= */}
+      <group position={[0, 2.75, 0]}>
+        {/* Armored Mounting Bridge Frame */}
+        <mesh position={[0, -0.32, 0]}>
+          <boxGeometry args={[2.5, 0.25, 0.7]} />
+          <meshStandardMaterial color="#1f1f23" metalness={0.85} roughness={0.25} />
+        </mesh>
+        <mesh position={[-1.2, -0.1, 0]}>
+          <boxGeometry args={[0.1, 0.45, 0.6]} />
+          <meshStandardMaterial color="#3f3f46" metalness={0.9} roughness={0.2} />
+        </mesh>
+        <mesh position={[1.2, -0.1, 0]}>
+          <boxGeometry args={[0.1, 0.45, 0.6]} />
+          <meshStandardMaterial color="#3f3f46" metalness={0.9} roughness={0.2} />
+        </mesh>
+
+        {/* Front-Facing Digital Master Timer */}
+        <group position={[0, 0, 0.12]} rotation={[-0.1, 0, 0]}>
+          <TimerModule3D
+            timeLeft={timeLeft}
+            strikes={strikes}
+            maxStrikes={maxStrikes}
+          />
+        </group>
+
+        {/* Back-Facing Digital Master Timer (Visible when orbiting to back modules) */}
+        <group position={[0, 0, -0.12]} rotation={[0.1, Math.PI, 0]}>
+          <TimerModule3D
+            timeLeft={timeLeft}
+            strikes={strikes}
+            maxStrikes={maxStrikes}
+          />
+        </group>
+      </group>
+
+      {/* Top Secondary Carry Grips */}
+      <group position={[0, 2.45, -0.75]}>
         <mesh castShadow>
-          <boxGeometry args={[2.5, 0.2, 0.4]} />
+          <boxGeometry args={[2.2, 0.15, 0.3]} />
           <meshStandardMaterial color="#27272a" metalness={0.9} roughness={0.2} />
-        </mesh>
-        <mesh position={[-1.1, -0.15, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 0.3, 16]} />
-          <meshStandardMaterial color="#52525b" metalness={0.9} />
-        </mesh>
-        <mesh position={[1.1, -0.15, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 0.3, 16]} />
-          <meshStandardMaterial color="#52525b" metalness={0.9} />
         </mesh>
       </group>
 
@@ -351,19 +378,9 @@ export const BombCase3D: React.FC<BombCase3DProps> = ({
         ))}
       </group>
 
-      {/* ================= FRONT FACE SLOTS ================= */}
-      {/* Slot 0: 3D Master Timer */}
-      <group position={slotPositions[0]}>
-        <TimerModule3D
-          timeLeft={timeLeft}
-          strikes={strikes}
-          maxStrikes={maxStrikes}
-        />
-      </group>
-
-      {/* Front Face: Modules 0 to 4 */}
-      {modules.slice(0, 5).map((mod, idx) => {
-        const slotPos = slotPositions[idx + 1];
+      {/* ================= FRONT FACE SLOTS (Modules 0 to 5) ================= */}
+      {modules.slice(0, 6).map((mod, idx) => {
+        const slotPos = slotPositions[idx];
         const isSelected = selectedModuleIndex === idx;
 
         return (
@@ -380,10 +397,9 @@ export const BombCase3D: React.FC<BombCase3DProps> = ({
         );
       })}
 
-      {/* ================= BACK FACE SLOTS ================= */}
-      {/* Back Face: Modules 5 to 7 (Rotated 180 deg around Y) */}
-      {modules.slice(5).map((mod, offsetIdx) => {
-        const globalIdx = 5 + offsetIdx;
+      {/* ================= BACK FACE SLOTS (Modules 6 to 11) ================= */}
+      {modules.slice(6, 12).map((mod, offsetIdx) => {
+        const globalIdx = 6 + offsetIdx;
         const slotPos = slotPositions[6 + offsetIdx];
         const isSelected = selectedModuleIndex === globalIdx;
 
@@ -400,51 +416,6 @@ export const BombCase3D: React.FC<BombCase3DProps> = ({
           </group>
         );
       })}
-
-      {/* Decorative Back Face Extra Props */}
-      <group position={slotPositions[9]} rotation={[0, Math.PI, 0]}>
-        <mesh position={[-0.45, 0, 0.08]}>
-          <cylinderGeometry args={[0.3, 0.3, 1.4, 24]} />
-          <meshStandardMaterial color="#2563eb" metalness={0.7} roughness={0.3} />
-        </mesh>
-        <mesh position={[0.45, 0, 0.08]}>
-          <cylinderGeometry args={[0.3, 0.3, 1.4, 24]} />
-          <meshStandardMaterial color="#2563eb" metalness={0.7} roughness={0.3} />
-        </mesh>
-        <Text position={[0, 0.8, 0.08]} fontSize={0.08} color="#93c5fd" fontWeight="bold">
-          BATTERY PACK (14.8V DUAL)
-        </Text>
-      </group>
-
-      <group position={slotPositions[10]} rotation={[0, Math.PI, 0]}>
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[2.2, 1.8, 0.1]} />
-          <meshStandardMaterial color="#064e3b" roughness={0.3} />
-        </mesh>
-        <mesh position={[0, 0, 0.08]}>
-          <boxGeometry args={[0.9, 0.9, 0.06]} />
-          <meshStandardMaterial color="#18181b" metalness={0.9} />
-        </mesh>
-        <Text position={[0, 0, 0.12]} fontSize={0.09} color="#34d399">
-          AI TENSOR-V3
-        </Text>
-      </group>
-
-      <group position={slotPositions[11]} rotation={[0, Math.PI, 0]}>
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[2.2, 1.8, 0.1]} />
-          <meshStandardMaterial color="#18181b" metalness={0.7} />
-        </mesh>
-        {[-0.5, 0.5].map((x, i) => (
-          <mesh key={i} position={[x, 0, 0.15]}>
-            <cylinderGeometry args={[0.35, 0.35, 1.2, 24]} />
-            <meshStandardMaterial color="#7f1d1d" metalness={0.6} />
-          </mesh>
-        ))}
-        <Text position={[0, 0.72, 0.08]} fontSize={0.08} color="#ef4444" fontWeight="bold">
-          DANGER: HIGH VOLTAGE
-        </Text>
-      </group>
     </group>
   );
 };

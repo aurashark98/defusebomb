@@ -56,10 +56,10 @@ export const ClueModal: React.FC<ClueModalProps> = ({ onClose }) => {
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
               <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
                 <Lightbulb className="w-3.5 h-3.5" />
-                #01 IMPUTASI DISTRIBUSI MIRING
+                #01 SENSOR CITRA MEDIS MATA
               </div>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Rata-rata mudah goyah akibat segelintir angka raksasa. Carilah ukuran pemusatan yang membagi data tepat di tengah tanpa memedulikan seberapa jauh pencilan berada.
+                Jika AI hanya dilatih di pencahayaan studio yang seragam, ia akan bingung di dunia nyata. Kurangnya variasi dan augmentasi kondisi pencahayaan pada data latih adalah akar permasalahannya.
               </p>
             </div>
 
@@ -67,10 +67,10 @@ export const ClueModal: React.FC<ClueModalProps> = ({ onClose }) => {
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
               <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
                 <Lightbulb className="w-3.5 h-3.5" />
-                #02 DUA FITUR IDENTIK (EDA)
+                #02 BIAS DATA REKRUTMEN
               </div>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Dua kolom yang saling menduplikasi informasi membuat determinan matriks menuju nol. Pikirkan kestabilan koefisien saat inversi tidak lagi unik.
+                Ketika 90% data pelamar masa lalu adalah laki-laki, AI menganggap gender tersebut sebagai faktor keberhasilan. Ketidakseimbangan ini melahirkan bias data yang tidak adil.
               </p>
             </div>
 
@@ -78,10 +78,10 @@ export const ClueModal: React.FC<ClueModalProps> = ({ onClose }) => {
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
               <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
                 <Lightbulb className="w-3.5 h-3.5" />
-                #03 AKURASI ALARM POSITIF
+                #03 POLA VS PEMAHAMAN MANUSIA
               </div>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Fokuslah hanya pada tembakan yang dinyatakan "positif". Berapa proporsi tembakan yang memang benar-benar mengenai sasaran dibanding seluruh alarm positif yang menyala?
+                AI tidak memiliki akal atau kesadaran. AI hanya mencocokkan pola statistik dan fitur piksel dari data yang telah dipelajari, bukan memahami esensi objek seperti manusia.
               </p>
             </div>
 
@@ -89,10 +89,10 @@ export const ClueModal: React.FC<ClueModalProps> = ({ onClose }) => {
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
               <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
                 <Lightbulb className="w-3.5 h-3.5" />
-                #04 KEBOCORAN DATA EVALUASI
+                #04 EVALUASI MODEL BARU
               </div>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Data uji harus steril dari tahap pembelajaran. Jangan pernah biarkan scaler menghitung ulang rata-rata atau variansi dari dataset evaluasi.
+                Model yang baru selesai dilatih tidak boleh langsung dipakai di lapangan. Wajib dilakukan tahap pengujian (testing) dengan data baru untuk mengukur akurasi dan generalisasinya.
               </p>
             </div>
 
@@ -100,10 +100,10 @@ export const ClueModal: React.FC<ClueModalProps> = ({ onClose }) => {
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
               <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
                 <Lightbulb className="w-3.5 h-3.5" />
-                #05 KATEGORI SANGAT BANYAK
+                #05 DIVERSIFIKASI DATASET KUCING
               </div>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Membuat 200 kolom biner baru akan mengundang kutukan dimensi. Perhatikan metode yang memetakan kategori ke probabilitas target secara ringkas.
+                Jika AI hanya kenal kucing putih, kucing hitam tampak asing. Solusi tepat bukanlah menghapus data atau menambah kucing putih, melainkan memperkaya variasi warna dan pose kucing.
               </p>
             </div>
 
@@ -111,10 +111,10 @@ export const ClueModal: React.FC<ClueModalProps> = ({ onClose }) => {
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
               <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
                 <Lightbulb className="w-3.5 h-3.5" />
-                #06 REGULARISASI SELEKSI FITUR
+                #06 EVOLUSI DEEP BLUE & ALPHAGO
               </div>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Salah satu regularisasi membentuk kontur berlian bersegi yang mampu mematikan bobot fitur yang tidak relevan menjadi tepat nol.
+                Dari catur berbasis aturan (1997) hingga permainan Go dengan kompleksitas kombinasi hampir tak terhingga (2016), AI terus berevolusi memecahkan problem yang semakin kompleks.
               </p>
             </div>
 
@@ -122,10 +122,10 @@ export const ClueModal: React.FC<ClueModalProps> = ({ onClose }) => {
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
               <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
                 <Lightbulb className="w-3.5 h-3.5" />
-                #07 URUTAN ALUR PIPA ML
+                #07 KOREKSI LABEL DATA (LABEL NOISE)
               </div>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Data mentah harus dibersihkan dulu dari kekosongan, lalu diselaraskan skalanya, barulah algoritma pembelajaran boleh menyentuhnya.
+                Prinsip Garbage In, Garbage Out. Jika foto diberi label yang keliru, tindakan terbaik adalah memperbaiki dan memvalidasi kebenaran label tersebut sesuai objek aslinya.
               </p>
             </div>
 
@@ -133,10 +133,54 @@ export const ClueModal: React.FC<ClueModalProps> = ({ onClose }) => {
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
               <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
                 <Lightbulb className="w-3.5 h-3.5" />
-                #08 ANCAMAN KRITIS MEMATIKAN
+                #08 PREDIKSI DINAMIS GOOGLE MAPS
               </div>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Dalam skenario bahaya tinggi, prioritas mutlak adalah meminimalkan False Negative (kebocoran ancaman). Metrik apa yang mengukur seberapa lengkap kita menangkap seluruh kasus positif?
+                Prediksi macet dan waktu tiba bekerja dengan menemukan pola dari data pergerakan pengguna secara real-time dipadukan dengan riwayat lalu lintas historis.
+              </p>
+            </div>
+
+            {/* Clue 9 */}
+            <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+              <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
+                <Lightbulb className="w-3.5 h-3.5" />
+                #09 PIPELINE TEACHABLE MACHINE
+              </div>
+              <p className="text-[11px] text-zinc-400 leading-relaxed">
+                Urutan logis pembuatan model: Kumpulkan contoh gambar gerakan lebih dulu → Latih model (training) → Uji akurasi (testing) → Gunakan model dalam aplikasi.
+              </p>
+            </div>
+
+            {/* Clue 10 */}
+            <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+              <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
+                <Lightbulb className="w-3.5 h-3.5" />
+                #10 SISTEM REKOMENDASI PRODUK
+              </div>
+              <p className="text-[11px] text-zinc-400 leading-relaxed">
+                Pencarian dan riwayat belanja pengguna sangat penting agar sistem AI dapat mempelajari pola minat serta preferensi unik setiap pelanggan untuk memberi saran yang tepat.
+              </p>
+            </div>
+
+            {/* Clue 11 */}
+            <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+              <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
+                <Lightbulb className="w-3.5 h-3.5" />
+                #11 KUALITAS DATA & PERFORMA AI
+              </div>
+              <p className="text-[11px] text-zinc-400 leading-relaxed">
+                Model secanggih apa pun akan gagal bila dilatih dengan data cacat. Kualitas, keberagaman variasi, serta ketepatan label data adalah faktor utama keberhasilan prediksi.
+              </p>
+            </div>
+
+            {/* Clue 12 */}
+            <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+              <div className="text-yellow-400 font-bold text-[11px] uppercase flex items-center gap-1">
+                <Lightbulb className="w-3.5 h-3.5" />
+                #12 HUMAN-IN-THE-LOOP MEDIS
+              </div>
+              <p className="text-[11px] text-zinc-400 leading-relaxed">
+                AI medis hebat dalam mendeteksi pola citra, namun keputusan akhir, pertimbangan etis, empati, serta tanggung jawab medis mutlak berada di tangan dokter manusia.
               </p>
             </div>
           </div>

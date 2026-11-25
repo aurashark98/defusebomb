@@ -9,248 +9,462 @@ export const DEFAULT_SETTINGS: GameSettings = {
 export const getFreshModules = (): DefusalModule[] => JSON.parse(JSON.stringify(INITIAL_MODULES));
 
 export const INITIAL_MODULES: DefusalModule[] = [
+  // ── 01. SOAL 1: Sensor Citra Medis (Pencahayaan Berbeda)
   {
     id: 'mod-1',
-    title: 'MODUL 01: KABEL IMPUTASI DATA',
+    title: 'MODUL 01: SENSOR CITRA MEDIS MATA',
+    category: 'Model Evaluation',
+    type: 'tactical-choice',
+    description: 'Sebuah AI digunakan untuk mendeteksi penyakit melalui foto mata. Namun, hasil deteksinya sering salah ketika foto diambil dengan pencahayaan berbeda. Apa kemungkinan penyebab utamanya?',
+    isDefused: false,
+    penaltySeconds: 45,
+    tacticalOptions: [
+      {
+        id: 'opt-1a',
+        text: 'A. AI tidak memiliki kemampuan mengenali gambar.',
+        isCorrect: false,
+        explanation: 'SALAH! AI computer vision mampu mengenali gambar, namun sangat bergantung pada data pelatihannya.'
+      },
+      {
+        id: 'opt-1b',
+        text: 'B. Data pelatihan kurang bervariasi sehingga AI kesulitan mengenali kondisi baru.',
+        isCorrect: true,
+        explanation: 'BENAR! Kurangnya variasi augmentasi data (pencahayaan, sudut, kontras) membuat model gagal melakukan generalisasi pada kondisi baru.'
+      },
+      {
+        id: 'opt-1c',
+        text: 'C. AI hanya dapat digunakan untuk kebutuhan kesehatan tertentu.',
+        isCorrect: false,
+        explanation: 'SALAH! AI dapat diterapkan pada berbagai cabang medis selama data pelatihannya memadai.'
+      },
+      {
+        id: 'opt-1d',
+        text: 'D. Sistem AI membutuhkan koneksi internet yang lebih cepat.',
+        isCorrect: false,
+        explanation: 'SALAH! Kecepatan internet tidak mempengaruhi akurasi inferensi model AI yang sudah terpasang.'
+      }
+    ]
+  },
+
+  // ── 02. SOAL 2: Bias Data Rekrutmen
+  {
+    id: 'mod-2',
+    title: 'MODUL 02: KABEL BIAS DATA REKRUTMEN',
     category: 'Data Preprocessing',
     type: 'cut-wire',
-    description: 'Kolom "Pendapatan_Bulanan" memiliki 18% missing values dan distribusinya SANGAT skewed ke kanan (ada outlier milyarder). Potong KABEL METODE IMPUTASI yang paling tahan terhadap distorsi outlier!',
+    description: 'Sebuah perusahaan melatih AI menggunakan 10.000 data pelamar kerja, namun 90% data berasal dari laki-laki sehingga AI cenderung memilih pelamar laki-laki. Potong KABEL MASALAH UTAMA kasus ini!',
     isDefused: false,
     penaltySeconds: 45,
     wires: [
       {
         id: 'w-red',
         color: 'red',
-        label: "fillna(df['Pendapatan'].mean())",
+        label: 'A. Overfitting (data terlalu banyak)',
         isCorrect: false,
-        explanation: 'SALAH! Nilai Mean sangat sensitif terhadap outlier ekstrem, sehingga akan mendongkrak rata-rata secara tidak realistis!'
+        explanation: 'SALAH! 10.000 data bukanlah penyebab overfitting, masalahnya ada pada proporsi demografis data.'
       },
       {
         id: 'w-blue',
         color: 'blue',
-        label: "fillna(df['Pendapatan'].median())",
-        isCorrect: true,
-        explanation: 'BENAR! Median adalah ukuran tendensi sentral yang robust (kebal) terhadap skewness dan outlier ekstrem.'
+        label: 'B. Algoritma gagal membaca teks CV',
+        isCorrect: false,
+        explanation: 'SALAH! Algoritma membaca CV dengan baik, namun pola yang dipelajarinya bias gender.'
       },
       {
         id: 'w-yellow',
         color: 'yellow',
-        label: "df.dropna(subset=['Pendapatan'])",
-        isCorrect: false,
-        explanation: 'SALAH! Membuang 18% baris data berharga akan menyebabkan kehilangan informasi signifikan dan potensi bias sampel!'
+        label: 'C. Bias data (keputusan tidak adil)',
+        isCorrect: true,
+        explanation: 'BENAR! Data historis yang tidak seimbang (90% pria) menyebabkan algoritma menganggap gender pria sebagai fitur prediktif unggul.'
       },
       {
         id: 'w-green',
         color: 'green',
-        label: "fillna(0)",
+        label: 'D. Kegagalan sistem tanpa internet',
         isCorrect: false,
-        explanation: 'SALAH! Mengisi 0 akan menciptakan puncak data palsu di angka 0 dan merusak model regresi/korelasi!'
+        explanation: 'SALAH! Masalah keadilan model tidak berkaitan dengan konektivitas jaringan.'
       }
     ]
   },
+
+  // ── 03. SOAL 3: Rekognisi Pola vs Pemahaman Manusia
   {
-    id: 'mod-2',
-    title: 'MODUL 02: RADAR KORELASI & MULTIKOLINEARITAS',
-    category: 'EDA',
+    id: 'mod-3',
+    title: 'MODUL 03: POLA VS PEMAHAMAN MANUSIA',
+    category: 'Model Training',
     type: 'tactical-choice',
-    description: 'Pada tahap Exploratory Data Analysis (EDA), heatmap menunjukkan fitur "Panjang_Meter" dan "Panjang_Centimeter" memiliki korelasi Pearson r = 1.00. Apa dampak fatal jika kedua fitur ini tetap dimasukkan ke model Linear Regression?',
+    description: 'Mengapa AI tidak bisa langsung dianggap memahami suatu objek seperti manusia ketika mengenali gambar kucing?',
     isDefused: false,
     penaltySeconds: 45,
     tacticalOptions: [
       {
-        id: 'opt-a',
-        text: 'Terjadi Multikolinearitas sempurna; matriks invers (XᵀX) singular sehingga estimasi koefisien menjadi tidak stabil/tak terhingga.',
+        id: 'opt-3a',
+        text: 'A. AI hanya dapat menyimpan gambar tanpa mengolahnya.',
+        isCorrect: false,
+        explanation: 'SALAH! AI memproses matriks piksel dan mengekstrak fitur matematis, bukan sekadar menyimpan.'
+      },
+      {
+        id: 'opt-3b',
+        text: 'B. AI mengenali pola berdasarkan data latih, bukan memahami konsep objek seperti manusia.',
         isCorrect: true,
-        explanation: 'TEPAT! Multikolinearitas sempurna membuat koefisien regresi tidak dapat ditentukan secara unik dan variansi koefisien meledak.'
+        explanation: 'TEPAT! AI bekerja berbasis korelasi statistik piksel (garis, tekstur, warna), bukan kesadaran konseptual atau semantik objek.'
       },
       {
-        id: 'opt-b',
-        text: 'Model akan otomatis mengalami Underfitting karena dataset dianggap terlalu sedikit.',
+        id: 'opt-3c',
+        text: 'C. AI tidak dapat membedakan bentuk dan warna.',
         isCorrect: false,
-        explanation: 'SALAH! Multikolinearitas tidak menyebabkan underfitting, melainkan instabilitas bobot/koefisien fitur.'
+        explanation: 'SALAH! Komputer mengenali channel warna RGB dan gradien tepi bentuk dengan sangat akurat.'
       },
       {
-        id: 'opt-c',
-        text: 'Akurasi model langsung menjadi 0% dan komputasi berhenti seketika.',
+        id: 'opt-3d',
+        text: 'D. AI selalu membutuhkan manusia untuk identifikasi setiap gambar.',
         isCorrect: false,
-        explanation: 'SALAH! Model tetap bisa berjalan namun interpretasi bobot menjadi kacau dan prediksi tidak reliabel.'
-      },
-      {
-        id: 'opt-d',
-        text: 'Gradient descent akan melompat ke local minimum dalam 1 iterasi.',
-        isCorrect: false,
-        explanation: 'SALAH! Fitur redundan justru menciptakan kontur lembah elips tajam yang memperlambat konvergensi.'
+        explanation: 'SALAH! Setelah dilatih, model AI mampu melakukan inferensi mandiri tanpa campur tangan manusia tiap saat.'
       }
     ]
   },
-  {
-    id: 'mod-3',
-    title: 'MODUL 03: KEYPAD DETONATOR CONFUSION MATRIX',
-    category: 'Model Evaluation',
-    type: 'confusion-matrix',
-    description: 'Sistem pertahanan udara mendeteksi ancaman drone: True Positive (TP) = 80, False Positive (FP) = 20, False Negative (FN) = 10, True Negative (TN) = 90. Masukkan nilai PRECISION model (dalam persentase bulat, contoh: 80 untuk 80%) ke keypad bom!',
-    isDefused: false,
-    penaltySeconds: 45,
-    matrixData: {
-      tp: 80,
-      fp: 20,
-      fn: 10,
-      tn: 90,
-      targetMetric: 'precision',
-      targetMetricLabel: 'PRECISION',
-      correctAnswer: 80,
-      tolerance: 0,
-      hint: 'Rumus Precision = TP / (TP + FP). Dari semua yang diprediksi positif, berapa persen yang benar-benar positif?'
-    }
-  },
+
+  // ── 04. SOAL 4: Pengujian Model pada Data Baru
   {
     id: 'mod-4',
-    title: 'MODUL 04: TERMINAL PATCH DATA LEAKAGE',
-    category: 'Data Preprocessing',
-    type: 'terminal-fix',
-    description: 'Sistem mendeteksi bug kritis berupa DATA LEAKAGE pada proses Feature Scaling data uji coba (test set). Pilih baris kode pengganti yang aman!',
+    title: 'MODUL 04: PROTOKOL EVALUASI MODEL',
+    category: 'Model Evaluation',
+    type: 'tactical-choice',
+    description: 'Dalam proses pengembangan AI, sebuah model sudah selesai dilatih. Namun model belum pernah dicoba menggunakan data baru. Tahapan apa yang seharusnya dilakukan selanjutnya?',
     isDefused: false,
     penaltySeconds: 45,
-    terminalData: {
-      context: 'Pipeline StandardScaler pada data Train dan Test:',
-      brokenCode: `scaler = StandardScaler()\nX_train_scaled = scaler.fit_transform(X_train)\n# [ERROR HAZARD] Membocorkan parameter mean/std test set!\nX_test_scaled = scaler.fit_transform(X_test)`,
-      options: [
-        {
-          id: 'tf-1',
-          codeSnippet: 'X_test_scaled = scaler.transform(X_test)',
-          isCorrect: true,
-          explanation: 'BENAR! Data test hanya boleh di-transform menggunakan mean & standar deviasi yang sudah dihitung dari data train!'
-        },
-        {
-          id: 'tf-2',
-          codeSnippet: 'X_test_scaled = scaler.fit(X_test).transform(X_train)',
-          isCorrect: false,
-          explanation: 'SALAH! Menggunakan fit pada X_test tetap membocorkan data test dan malah merusak X_train!'
-        },
-        {
-          id: 'tf-3',
-          codeSnippet: 'X_test_scaled = MinMaxScaler().fit_transform(X_test)',
-          isCorrect: false,
-          explanation: 'SALAH! Mengganti scaler jenis lain dan tetap melakukan fit pada test set tetap menimbulkan data leakage!'
-        },
-        {
-          id: 'tf-4',
-          codeSnippet: 'X_test_scaled = scaler.fit_transform(pd.concat([X_train, X_test]))',
-          isCorrect: false,
-          explanation: 'SALAH BESAR! Menggabungkan train dan test sebelum fit adalah contoh terburuk dari data leakage!'
-        }
-      ]
-    }
+    tacticalOptions: [
+      {
+        id: 'opt-4a',
+        text: 'A. Mengumpulkan data kembali dari awal.',
+        isCorrect: false,
+        explanation: 'SALAH! Tidak perlu mengulang dari awal jika model sudah dilatih dengan benar.'
+      },
+      {
+        id: 'opt-4b',
+        text: 'B. Langsung menggunakan model dalam dunia nyata.',
+        isCorrect: false,
+        explanation: 'BAHAYA! Menerapkan model tanpa validasi berisiko menimbulkan kegagalan fatal pada lingkungan produksi.'
+      },
+      {
+        id: 'opt-4c',
+        text: 'C. Melakukan pengujian (testing) untuk mengetahui akurasi & generalisasi model.',
+        isCorrect: true,
+        explanation: 'BENAR! Tahap Evaluasi / Testing dengan data uji (unseen test set) wajib dilakukan untuk memvalidasi performa nyata model.'
+      },
+      {
+        id: 'opt-4d',
+        text: 'D. Menghapus model dan menggantinya dengan algoritma lain.',
+        isCorrect: false,
+        explanation: 'SALAH! Kita belum tahu performa model tersebut sebelum diuji, jadi jangan langsung dihapus.'
+      }
+    ]
   },
+
+  // ── 05. SOAL 5: Kucing Hitam vs Kucing Putih (Diversifikasi Data)
   {
     id: 'mod-5',
-    title: 'MODUL 05: KABEL ENCODING HIGH CARDINALITY',
-    category: 'Feature Engineering',
+    title: 'MODUL 05: KABEL DIVERSIFIKASI DATASET',
+    category: 'Data Preprocessing',
     type: 'cut-wire',
-    description: 'Fitur "Kecamatan_Pelanggan" memiliki 200 kategori unik tanpa urutan hierarki. Jika memakai One-Hot Encoding biasa, dataset meledak menjadi 200 kolom kosong (curse of dimensionality). Potong kabel metode penanganan yang paling efisien!',
+    description: 'Sebuah AI hanya dilatih gambar kucing putih. Ketika diberi gambar kucing hitam, AI mengidentifikasinya sebagai anjing. Potong KABEL SOLUSI PALING TEPAT!',
     isDefused: false,
     penaltySeconds: 45,
     wires: [
       {
-        id: 'w2-red',
+        id: 'w-red',
         color: 'red',
-        label: 'Label Encoding (0 sampai 199)',
+        label: 'A. Menambah jumlah kucing putih',
         isCorrect: false,
-        explanation: 'SALAH! Memberikan angka 0-199 pada data nominal menciptakan hubungan urutan palsu (kecamatan 199 dianggap lebih tinggi dari 0) bagi model linier/neural net!'
+        explanation: 'SALAH! Ini justru akan semakin memperparah bias model terhadap kucing berwarna putih saja.'
       },
       {
-        id: 'w2-yellow',
-        color: 'yellow',
-        label: 'Target Encoding / Frequency Encoding / Hashing Trick',
+        id: 'w-blue',
+        color: 'blue',
+        label: 'B. Mengurangi data pelatihan',
+        isCorrect: false,
+        explanation: 'SALAH! Mengurangi data latih tidak menyelesaikan masalah representasi warna.'
+      },
+      {
+        id: 'w-green',
+        color: 'green',
+        label: 'C. Menambah data kucing variasi warna & kondisi',
         isCorrect: true,
-        explanation: 'BENAR! Target Encoding atau Frequency Encoding mereduksi dimensi tinggi menjadi representasi numerik ringkas tanpa ledakan jumlah kolom!'
+        explanation: 'BENAR! Menambahkan dataset dengan variasi warna (hitam, belang, oranye) dan kondisi pencahayaan akan memperluas generalisasi fitur kucing.'
       },
       {
-        id: 'w2-purple',
-        color: 'purple',
-        label: 'StandardScaler langsung ke teks kategori',
+        id: 'w-yellow',
+        color: 'yellow',
+        label: 'D. Mengganti semua data jadi anjing',
         isCorrect: false,
-        explanation: 'SALAH! StandardScaler hanya menerima input data angka kontinu, tidak bisa memproses data string kategorikal!'
-      },
-      {
-        id: 'w2-cyan',
-        color: 'cyan',
-        label: 'Hapus kolom kecamatan tanpa pertimbangan',
-        isCorrect: false,
-        explanation: 'SALAH! Lokasi geografis seringkali merupakan sinyal prediksi yang sangat kuat, membuangnya begitu saja merugikan performa model!'
+        explanation: 'SALAH! Ini akan merusak klasifikasi kucing dan mengubah tujuan model secara keliru.'
       }
     ]
   },
+
+  // ── 06. SOAL 6: Deep Blue & AlphaGo (Evolusi Kompleksitas AI)
   {
     id: 'mod-6',
-    title: 'MODUL 06: DIAL KALIBRASI OVERFITTING TREE',
+    title: 'MODUL 06: EVOLUSI KOMPLEKSITAS AI',
     category: 'Model Training',
-    type: 'tuning-dial',
-    description: 'Decision Tree mengalami OVERFITTING ekstrem: Train Accuracy = 99.8%, namun Test Accuracy hanya 58.4%! Knob `max_depth` saat ini disetel pada nilai 45 (pohon terlalu dalam menghafal noise). Putar dial ke rentang kedalaman optimal (6 hingga 12) untuk melakukan pruning!',
-    isDefused: false,
-    penaltySeconds: 45,
-    dialData: {
-      parameterName: 'max_depth',
-      description: 'Kedalaman maksimum percabangan pohon keputusan (Pruning Control)',
-      scenario: 'Train Acc: 99.8% | Test Acc: 58.4% (Overfitting Detonator Active)',
-      min: 1,
-      max: 45,
-      step: 1,
-      unit: 'levels',
-      currentValue: 45,
-      targetRange: [6, 12],
-      correctFeedback: 'TEPAT! Membatasi max_depth antara 6-12 menyederhanakan pohon keputusan, mengurangi varians, dan meningkatkan generalisasi pada data uji!',
-      wrongFeedback: 'SALAH! Kedalaman tersebut belum optimal untuk menyeimbangkan bias-variance tradeoff pada kasus ini.'
-    }
-  },
-  {
-    id: 'mod-7',
-    title: 'MODUL 07: URUTAN URGEN PIPELINE MACHINE LEARNING',
-    category: 'Data Preprocessing',
-    type: 'pipeline-sequence',
-    description: 'Sistem pertahanan terganggu karena komponen Machine Learning pipeline teracak. Susun 5 tahap ini dari URUTAN PERTAMA hingga TERAKHIR agar alur eksekusi bebas dari data leakage!',
-    isDefused: false,
-    penaltySeconds: 45,
-    pipelineSteps: [
-      { id: 'step-1', name: 'Train / Test Data Split', order: 1 },
-      { id: 'step-2', name: 'Missing Value Imputation (Fit train, transform test)', order: 2 },
-      { id: 'step-3', name: 'Feature Scaling & Encoding', order: 3 },
-      { id: 'step-4', name: 'Model Training (Fit Classifier)', order: 4 },
-      { id: 'step-5', name: 'Model Evaluation pada Test Set', order: 5 },
-    ]
-  },
-  {
-    id: 'mod-8',
-    title: 'MODUL 08: OPTIMASI METRIK KRITIS DETEKSI BOM',
-    category: 'Model Evaluation',
     type: 'tactical-choice',
-    description: 'Dalam sistem deteksi terorisme / bom atau diagnosis kanker stadium lanjut, skenario kesalahan mana yang PALING MEMATIKAN (paling dihindari), dan metrik evaluasi apa yang wajib dimaksimalkan?',
+    description: 'Deep Blue berhasil mengalahkan juara catur pada 1997, sedangkan AlphaGo mengalahkan juara Go pada 2016. Hal ini menunjukkan bahwa ...',
     isDefused: false,
     penaltySeconds: 45,
     tacticalOptions: [
       {
-        id: 'opt-recall',
-        text: 'False Negative (Bom lolos tidak terdeteksi); Wajib maksimalkan RECALL (Sensitivitas).',
+        id: 'opt-6a',
+        text: 'A. AI hanya dapat digunakan untuk permainan strategi papan.',
+        isCorrect: false,
+        explanation: 'SALAH! Game adalah benchmark pengujian; teknologi intinya diterapkan di berbagai bidang luas.'
+      },
+      {
+        id: 'opt-6b',
+        text: 'B. Kemampuan AI berkembang dalam menyelesaikan permasalahan yang semakin kompleks.',
         isCorrect: true,
-        explanation: 'TEPAT! Lebih baik terjadi False Alarm (False Positive) daripada bom lolos (False Negative). Recall = TP / (TP + FN) harus setinggi mungkin!'
+        explanation: 'BENAR! Dari pencarian pohon berbasis aturan (Deep Blue) ke pembelajaran mendalam & Reinforcement Learning intuitif (AlphaGo).'
       },
       {
-        id: 'opt-prec',
-        text: 'False Positive (Alarm palsu); Wajib maksimalkan PRECISION saja.',
+        id: 'opt-6c',
+        text: 'C. Semua permainan dapat diselesaikan AI tanpa proses pelatihan.',
         isCorrect: false,
-        explanation: 'SALAH! Memaksimalkan precision bisa membuat sistem terlalu konservatif dan membiarkan banyak bom berbahaya lolos!'
+        explanation: 'SALAH! AlphaGo membutuhkan jutaan kali self-play dan pelatihan data intensif.'
       },
       {
-        id: 'opt-acc',
-        text: 'True Negative; Wajib maksimalkan Overall Accuracy tanpa melihat distribusi kelas.',
+        id: 'opt-6d',
+        text: 'D. AI sudah memiliki kecerdasan yang sama persis dengan manusia.',
         isCorrect: false,
-        explanation: 'SALAH! Jika 99% data adalah non-bom, model bodoh yang menebak selalu non-bom punya akurasi 99% tapi mematikan semua orang!'
+        explanation: 'SALAH! AlphaGo adalah Narrow AI (spesifik satu domain), bukan Artificial General Intelligence (AGI).'
+      }
+    ]
+  },
+
+  // ── 07. SOAL 7: Label Noise Cleanup (Terminal CRT)
+  {
+    id: 'mod-7',
+    title: 'MODUL 07: TERMINAL LABEL DATA CORRECTION',
+    category: 'Data Preprocessing',
+    type: 'terminal-fix',
+    description: 'Pengembang menemukan AI sering salah prediksi karena beberapa foto dalam dataset diberi label yang keliru (label noise). Pilih instruksi terminal yang tepat!',
+    isDefused: false,
+    penaltySeconds: 45,
+    terminalData: {
+      context: 'CRITICAL ERROR: Ground Truth Annotation Mismatch Detected in Training Dataset',
+      brokenCode: `for img in dataset:\n    if detect_mislabeled(img):\n        # [ANOMALI] Anotasi label bertentangan dengan ground truth objek!\n        ignore_and_train_anyway(img)`,
+      options: [
+        {
+          id: 'tf-1',
+          codeSnippet: 'A. Memperbesar kapasitas penyimpanan dataset.',
+          isCorrect: false,
+          explanation: 'SALAH! Menambah kapasitas hard disk tidak memperbaiki kualitas atau kebenaran data.'
+        },
+        {
+          id: 'tf-2',
+          codeSnippet: 'B. Menghapus seluruh sistem AI.',
+          isCorrect: false,
+          explanation: 'SALAH! Masalah ada pada data anotasi, bukan pada arsitektur sistem secara keseluruhan.'
+        },
+        {
+          id: 'tf-3',
+          codeSnippet: 'C. Memperbaiki label data agar sesuai dengan objek sebenarnya (Ground Truth).',
+          isCorrect: true,
+          explanation: 'BENAR! Membersihkan label noise (relabelling / data curation) adalah langkah paling esensial agar model mempelajari pola yang benar.'
+        },
+        {
+          id: 'tf-4',
+          codeSnippet: 'D. Menambahkan lebih banyak data tanpa memeriksa kualitasnya.',
+          isCorrect: false,
+          explanation: 'SALAH! Prinsip "Garbage In, Garbage Out": menambah data kotor hanya akan memperburuk performa model.'
+        }
+      ]
+    }
+  },
+
+  // ── 08. SOAL 8: Google Maps & Pola Data
+  {
+    id: 'mod-8',
+    title: 'MODUL 08: PREDIKSI DINAMIS GOOGLE MAPS',
+    category: 'Model Evaluation',
+    type: 'tactical-choice',
+    description: 'Google Maps mampu memprediksi kemacetan dan estimasi waktu tiba (ETA). Kemampuan tersebut merupakan contoh penerapan AI yang memanfaatkan ...',
+    isDefused: false,
+    penaltySeconds: 45,
+    tacticalOptions: [
+      {
+        id: 'opt-8a',
+        text: 'A. Pola data historis & real-time untuk memprediksi kondisi perjalanan.',
+        isCorrect: true,
+        explanation: 'TEPAT! AI menggabungkan pola pergerakan GPS pengguna secara real-time dengan tren data historis hari/jam serupa.'
       },
       {
-        id: 'opt-mse',
-        text: 'Mean Squared Error (MSE) harus diturunkan ke nilai negatif.',
+        id: 'opt-8b',
+        text: 'B. Perintah manual dari seluruh pengguna jalan.',
         isCorrect: false,
-        explanation: 'SALAH! MSE tidak pernah bernilai negatif dan ini adalah problem klasifikasi, bukan regresi!'
+        explanation: 'SALAH! Pengguna tidak menginput perintah manual kemacetan secara terus-menerus; data diserap otomatis dari sensor GPS.'
+      },
+      {
+        id: 'opt-8c',
+        text: 'C. Data statis yang tidak pernah berubah.',
+        isCorrect: false,
+        explanation: 'SALAH! Kemacetan bersifat dinamis dan fluktuatif setiap detiknya.'
+      },
+      {
+        id: 'opt-8d',
+        text: 'D. Sistem yang hanya menghitung jarak lurus antarwilayah.',
+        isCorrect: false,
+        explanation: 'SALAH! Perhitungan jarak statis tidak bisa memprediksi kemacetan atau waktu tempuh dinamis.'
+      }
+    ]
+  },
+
+  // ── 09. SOAL 9: Urutan Proses Teachable Machine (Tactical Choice)
+  {
+    id: 'mod-9',
+    title: 'MODUL 09: ALUR PROSES TEACHABLE MACHINE',
+    category: 'Model Training',
+    type: 'tactical-choice',
+    description: 'Seorang siswa ingin membuat AI yang dapat membedakan gerakan tangan kanan dan kiri menggunakan Teachable Machine. Urutan proses yang paling tepat adalah ...',
+    isDefused: false,
+    penaltySeconds: 45,
+    tacticalOptions: [
+      {
+        id: 'opt-9a',
+        text: 'A. Menguji model, menggunakan model, mengumpulkan data, lalu melatih model.',
+        isCorrect: false,
+        explanation: 'SALAH! Pengujian dan deployment tidak bisa dilakukan sebelum data dikumpulkan dan model dilatih.'
+      },
+      {
+        id: 'opt-9b',
+        text: 'B. Mengumpulkan gambar gerakan, melatih model, menguji hasilnya, lalu menggunakan model.',
+        isCorrect: true,
+        explanation: 'BENAR! Tahapan pipeline AI: 1. Kumpulkan data gambar -> 2. Latih model -> 3. Uji hasilnya -> 4. Gunakan (export/deploy) model.'
+      },
+      {
+        id: 'opt-9c',
+        text: 'C. Melatih model, mengumpulkan gambar, menggunakan model, lalu menguji hasilnya.',
+        isCorrect: false,
+        explanation: 'SALAH! Pelatihan model memerlukan data di awal, tidak mungkin melatih tanpa sampel data.'
+      },
+      {
+        id: 'opt-9d',
+        text: 'D. Menggunakan model, menguji hasilnya, lalu mengumpulkan data.',
+        isCorrect: false,
+        explanation: 'SALAH! Alur terbalik, data harus dikumpulkan pertama kali sebelum melatih atau menguji.'
+      }
+    ]
+  },
+
+  // ── 10. SOAL 10: Sistem Rekomendasi E-Commerce
+  {
+    id: 'mod-10',
+    title: 'MODUL 10: SISTEM REKOMENDASI PRODUK',
+    category: 'EDA',
+    type: 'tactical-choice',
+    description: 'Sebuah perusahaan mengumpulkan data pencarian, riwayat pembelian, dan produk yang dilihat pengguna. Mengapa data tersebut sangat penting bagi AI?',
+    isDefused: false,
+    penaltySeconds: 45,
+    tacticalOptions: [
+      {
+        id: 'opt-10a',
+        text: 'A. Agar AI dapat menentukan produk yang wajib dibeli oleh pengguna.',
+        isCorrect: false,
+        explanation: 'SALAH! AI pemberi rekomendasi tidak memaksakan pembelian, hanya memberikan opsi yang relevan.'
+      },
+      {
+        id: 'opt-10b',
+        text: 'B. Menemukan pola preferensi pengguna dan memberikan rekomendasi yang relevan.',
+        isCorrect: true,
+        explanation: 'BENAR! Collaborative filtering & content-based filtering menggunakan riwayat interaksi untuk memahami minat spesifik pengguna.'
+      },
+      {
+        id: 'opt-10c',
+        text: 'C. Agar AI dapat menggantikan seluruh proses transaksi perbankan.',
+        isCorrect: false,
+        explanation: 'SALAH! Transaksi keuangan ditangani oleh payment gateway, bukan algoritma rekomendasi belanja.'
+      },
+      {
+        id: 'opt-10d',
+        text: 'D. Agar AI dapat mengetahui seluruh informasi pribadi rahasia pengguna.',
+        isCorrect: false,
+        explanation: 'SALAH! Pengumpulan data bertujuan memetakan preferensi produk, bukan menyalahgunakan privasi.'
+      }
+    ]
+  },
+
+  // ── 11. SOAL 11: Hubungan Kualitas Data dan Performa AI
+  {
+    id: 'mod-11',
+    title: 'MODUL 11: KABEL KUALITAS VS PERFORMA DATA',
+    category: 'Data Preprocessing',
+    type: 'cut-wire',
+    description: 'Manakah pernyataan yang paling tepat mengenai hubungan antara kualitas data dan performa AI? Potong KABEL PERNYATAAN YANG BENAR!',
+    isDefused: false,
+    penaltySeconds: 45,
+    wires: [
+      {
+        id: 'w-red',
+        color: 'red',
+        label: 'A. Model canggih selalu akurat meski data buruk',
+        isCorrect: false,
+        explanation: 'SALAH! Algoritma secanggih apa pun akan gagal jika dilatih dengan data yang buruk (Garbage In, Garbage Out).'
+      },
+      {
+        id: 'w-yellow',
+        color: 'yellow',
+        label: 'B. Jumlah data satu-satunya penentu akurasi',
+        isCorrect: false,
+        explanation: 'SALAH! Miliaran data jika isinya bias atau berantakan tidak akan menghasilkan model yang andal.'
+      },
+      {
+        id: 'w-green',
+        color: 'green',
+        label: 'C. Kualitas, variasi & ketepatan label tentukan performa AI',
+        isCorrect: true,
+        explanation: 'BENAR! Data-Centric AI membuktikan bahwa data yang bersih, representatif, bervariasi, dan berlabel presisi adalah kunci utama kecerdasan AI.'
+      },
+      {
+        id: 'w-blue',
+        color: 'blue',
+        label: 'D. Data latih tidak perlu proses pemeriksaan',
+        isCorrect: false,
+        explanation: 'SALAH! Data preparation dan validasi adalah 80% porsi pekerjaan penting dalam machine learning.'
+      }
+    ]
+  },
+
+  // ── 12. SOAL 12: Human-in-the-Loop Medis
+  {
+    id: 'mod-12',
+    title: 'MODUL 12: HUMAN-IN-THE-LOOP KESEHATAN',
+    category: 'Model Evaluation',
+    type: 'tactical-choice',
+    description: 'Di masa depan, dokter menggunakan AI untuk menganalisis hasil pemeriksaan pasien. Mengapa dokter tetap diperlukan meskipun AI dapat melakukan analisis?',
+    isDefused: false,
+    penaltySeconds: 45,
+    tacticalOptions: [
+      {
+        id: 'opt-12a',
+        text: 'A. Karena AI sama sekali tidak dapat memproses data kesehatan.',
+        isCorrect: false,
+        explanation: 'SALAH! AI sangat piawai memproses data medis seperti X-ray, MRI, dan CT-scan.'
+      },
+      {
+        id: 'opt-12b',
+        text: 'B. Keputusan akhir tetap membutuhkan pertimbangan, empati, dan tanggung jawab hukum manusia.',
+        isCorrect: true,
+        explanation: 'MUTLAK BENAR! AI berperan sebagai pendukung keputusan (decision support), namun tanggung jawab etis, medis, empati, dan diagnosa klinis holistik tetap berada di tangan dokter.'
+      },
+      {
+        id: 'opt-12c',
+        text: 'C. Karena AI hanya dapat digunakan untuk mengolah data nonmedis.',
+        isCorrect: false,
+        explanation: 'SALAH! Aplikasi AI di bidang bioinformatika dan kedokteran sangat pesat berkembang.'
+      },
+      {
+        id: 'opt-12d',
+        text: 'D. Karena seluruh hasil analisis AI pasti salah.',
+        isCorrect: false,
+        explanation: 'SALAH! Analisis AI sering kali memiliki akurasi sangat tinggi dalam mendeteksi anomali mikroskopis.'
       }
     ]
   }

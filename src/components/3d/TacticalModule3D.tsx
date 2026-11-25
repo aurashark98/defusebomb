@@ -82,13 +82,14 @@ export const TacticalModule3D: React.FC<TacticalModule3DProps> = ({
               {/* Option text */}
               <Text
                 position={[0.1, 0, 0.04]}
-                fontSize={0.048}
+                fontSize={0.042}
+                lineHeight={1.1}
                 color={isSelected ? "#ffffff" : "#d4d4d8"}
-                maxWidth={1.6}
+                maxWidth={1.65}
                 anchorX="center"
                 anchorY="middle"
               >
-                {opt.text.slice(0, 52)}...
+                {opt.text.length > 70 ? opt.text.slice(0, 68) + '...' : opt.text}
               </Text>
             </group>
           );
