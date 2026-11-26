@@ -65,7 +65,7 @@ function FlashlightLight({ isOn }: { isOn: boolean }) {
     lightRef.current.position.copy(camera.position);
     const forward = new THREE.Vector3();
     camera.getWorldDirection(forward);
-    targetRef.current.position.copy(camera.position).addScaledVector(forward, 15);
+    targetRef.current.position.copy(camera.position).addScaledVector(forward, 18);
     lightRef.current.target = targetRef.current;
   });
 
@@ -73,22 +73,23 @@ function FlashlightLight({ isOn }: { isOn: boolean }) {
 
   return (
     <group>
-      {/* Main Ultra-Bright Tactical Beam with Wide Coverage */}
+      {/* Main Ultra-Bright Tactical Beam with Wide Coverage & Realistic Falloff */}
       <spotLight
         ref={lightRef}
-        intensity={24.0}
-        distance={45}
-        angle={Math.PI / 5.5}
-        penumbra={0.35}
-        color="#ffffff"
+        intensity={28.0}
+        distance={48}
+        angle={Math.PI / 5.2}
+        penumbra={0.38}
+        color="#f8fafc"
         castShadow
+        shadow-bias={-0.0001}
       />
       {/* Soft Forward Spill Light to naturally illuminate immediate surroundings */}
       <pointLight
         position={[camera.position.x, camera.position.y, camera.position.z]}
-        intensity={2.2}
-        distance={14}
-        color="#f1f5f9"
+        intensity={2.6}
+        distance={16}
+        color="#e2e8f0"
       />
     </group>
   );
@@ -674,23 +675,25 @@ export const BombScene: React.FC<BombSceneProps> = ({
           <color attach="background" args={['#09090d']} />
           <PerspectiveCamera makeDefault position={[0, 0.35, 4.9]} fov={62} near={0.05} far={200} />
 
-          {/* Dynamic GTA Cinematic Lighting (Dimmer bunker atmosphere for tactical flashlight) */}
-          <ambientLight intensity={0.15} />
+          {/* Tactical Cinematic Military Facility Lighting */}
+          <ambientLight intensity={0.22} color="#0f172a" />
           <directionalLight
-            position={[5, 11, 6]}
-            intensity={0.4}
+            position={[4, 12, 5]}
+            intensity={0.55}
             color="#fef3c7"
             castShadow={enableShadows}
             shadow-bias={-0.0001}
-            shadow-camera-left={-14}
-            shadow-camera-right={14}
-            shadow-camera-top={14}
-            shadow-camera-bottom={-14}
+            shadow-camera-left={-15}
+            shadow-camera-right={15}
+            shadow-camera-top={15}
+            shadow-camera-bottom={-15}
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
           />
-          <directionalLight position={[-6, 6, -5]} intensity={0.2} color="#38bdf8" />
-          <pointLight position={[0, 3.2, 3.5]} intensity={0.4} color="#ffffff" distance={16} />
-          <pointLight position={[0, -0.5, 2.8]} intensity={0.3} color="#f59e0b" distance={9} />
-          <pointLight position={[0, 0.5, -2.8]} intensity={0.3} color="#38bdf8" distance={9} />
+          <directionalLight position={[-7, 5, -6]} intensity={0.25} color="#38bdf8" />
+          <pointLight position={[0, 4.5, 0]} intensity={0.4} color="#f59e0b" distance={18} />
+          <pointLight position={[0, -0.2, 2.9]} intensity={0.35} color="#fef08a" distance={8} />
+          <pointLight position={[0, 0.2, -2.9]} intensity={0.35} color="#38bdf8" distance={8} />
 
           {/* Tactical Focused Flashlight (Active only when holding slot 1 AND flashlight is ON) */}
           <FlashlightLight isOn={activeSlot === 1 && hasFlashlight && isFlashlightOn} />
